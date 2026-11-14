@@ -1,0 +1,30 @@
+// Custom scrollbar: antd has no scrollbar component of its own — every scrollable region
+// (Table, Menu overflow, etc.) uses the browser's native scrollbar. The OS-default one
+// (visible end-arrows, thick chunky track on Windows) clashes with the rest of the app's
+// clean, minimal look, so we replace it with a thin, rounded, low-contrast one instead.
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+*::-webkit-scrollbar-corner {
+    background: transparent;
+}

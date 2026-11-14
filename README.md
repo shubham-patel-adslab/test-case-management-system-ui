@@ -1,78 +1,57 @@
-# React + TypeScript + Vite
+# TCMS UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React frontend for the Test Case Management System. The backend (Node.js/Express, PostgreSQL, Redis)
+lives in a separate repository.
 
-Currently, two official plugins are available:
+- Requirements: [document/prd.md](document/prd.md) (full assignment) and
+  [document/ui-requirements.md](document/ui-requirements.md) (UI scope and API contract).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+React 19 (React Compiler) · TypeScript · Vite · Ant Design · React Router · TanStack Query · axios ·
+react-hook-form + zod · i18next · MSW (mock API in development)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Local development
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+Requires Node 24 (see `.nvmrc`).
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+nvm use
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+With the defaults, the app runs against the MSW mock API, so no backend is required.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Variable | Purpose | Default (`.env.development`) |
+| --- | --- | --- |
+| `VITE_TCMS_API_URL` | API root the axios client calls | `/api` |
+| `VITE_TCMS_API_MOCKING` | `true` serves API calls from MSW mocks (dev only) | `true` |
 
+To use a locally running backend, create `.env.development.local` (git-ignored):
+
+```bash
+VITE_TCMS_API_URL=http://localhost:3000/api
+VITE_TCMS_API_MOCKING=false
+```
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Type-check and build for production |
+| `npm run lint` | Lint with type-aware ESLint rules |
+| `npm run preview` | Serve the production build locally |
+
+## Project structure
+
+```text
+src/
+├── app/            # bootstrap: providers, router, i18n, axios client, MSW setup
+├── features/       # one folder per domain (project, test-case, test-suite, …)
+├── shared/         # cross-feature components (layout, loading state), i18n
+└── styles/         # global SCSS partials
 ```
