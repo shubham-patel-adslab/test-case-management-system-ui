@@ -7,7 +7,9 @@
         "openSidebar": "Open navigation menu"
     },
     "queryState": {
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "loadError": "Failed to load data",
+        "retry": "Retry"
     },
     "notFound": {
         "title": "Page not found",
