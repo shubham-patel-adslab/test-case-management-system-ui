@@ -1,5 +1,49 @@
 {
+    "form": {
+        "nameLabel": "Name",
+        "descriptionLabel": "Description",
+        "versionLabel": "Version",
+        "statusLabel": "Status",
+        "submit": "Submit"
+    },
+    "validation": {
+        "nameRequired": "Name is required",
+        "nameMaxLength": "Name must be at most 100 characters",
+        "descriptionMaxLength": "Description must be at most 1000 characters",
+        "versionMaxLength": "Version must be at most 20 characters",
+        "statusRequired": "Status is required"
+    },
+    "status": {
+        "active": "Active",
+        "on-hold": "On hold",
+        "completed": "Completed",
+        "archived": "Archived"
+    },
     "page": {
-        "paginationTitle": "Projects"
+        "paginationTitle": "Projects",
+        "addProject": "Add Project",
+        "createTitle": "Add Project",
+        "updateTitle": "Update Project"
+    },
+    "view": {
+        "membersLabel": "Members",
+        "createdAtLabel": "Created",
+        "updatedAtLabel": "Last updated"
+    },
+    "table": {
+        "nameColumn": "Name",
+        "versionColumn": "Version",
+        "statusColumn": "Status",
+        "membersColumn": "Members",
+        "actionColumn": "Action"
+    },
+    "action": {
+        "view": "View",
+        "edit": "Edit"
+    },
+    "notifications": {
+        "createSuccess": "Project created successfully",
+        "updateSuccess": "Project updated successfully",
+        "saveError": "Failed to save project. Please try again."
     }
 }
