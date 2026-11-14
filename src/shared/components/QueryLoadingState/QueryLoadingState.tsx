@@ -7,7 +7,7 @@ export function QueryLoadingState() {
     const { t } = useTranslation('common');
 
     return (
-        <div className={styles['ads-query-loading-state']}>
+        <div className={styles['tb-query-loading-state']}>
             <Spin size="large" description={t('queryState.loading')} />
         </div>
     );

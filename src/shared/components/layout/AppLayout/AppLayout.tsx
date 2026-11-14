@@ -15,15 +15,15 @@ export function AppLayout() {
     // desktop pattern — on mobile the sidebar is a Drawer overlay instead, so the page keeps
     // its normal, natural scroll rather than being forced into a contained inner region.
     const layoutClassName = isMobile
-        ? styles['ads-app-layout']
-        : `${styles['ads-app-layout']} ${styles['ads-app-layout--fixed']}`;
+        ? styles['tb-app-layout']
+        : `${styles['tb-app-layout']} ${styles['tb-app-layout--fixed']}`;
 
     return (
         <Layout className={layoutClassName}>
             <AppSidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} />
-            <Layout className={styles['ads-app-layout__main']}>
+            <Layout className={styles['tb-app-layout__main']}>
                 <AppHeader onOpenSidebar={() => setSidebarCollapsed(false)} />
-                <Layout.Content className={styles['ads-app-layout__content']}>
+                <Layout.Content className={styles['tb-app-layout__content']}>
                     {/* Inside Content, so sidebar + header stay visible while a lazy page chunk loads. */}
                     <Suspense fallback={<QueryLoadingState />}>
                         <Outlet />

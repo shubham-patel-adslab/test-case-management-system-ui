@@ -41,7 +41,7 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
     const appName = t('appName');
 
     const logoMark = (
-        <span className={styles['ads-app-sidebar__logo-mark']}>
+        <span className={styles['tb-app-sidebar__logo-mark']}>
             {appName.charAt(0)}
         </span>
     );
@@ -49,10 +49,10 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
     // Collapsed rail (desktop only): shows just the logo mark; hovering swaps it for the
     // expand icon in place, since there's no room for a separate always-visible button.
     const brand = !collapsed || isMobile ? (
-        <div className={styles['ads-app-sidebar__brand']}>
-            <Link to="/" className={styles['ads-app-sidebar__logo']}>
+        <div className={styles['tb-app-sidebar__brand']}>
+            <Link to="/" className={styles['tb-app-sidebar__logo']}>
                 {logoMark}
-                <span className={styles['ads-app-sidebar__logo-text']}>{appName}</span>
+                <span className={styles['tb-app-sidebar__logo-text']}>{appName}</span>
             </Link>
             <Button
                 type="text"
@@ -65,12 +65,12 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
         <Button
             type="text"
             block
-            className={styles['ads-app-sidebar__logo-toggle']}
+            className={styles['tb-app-sidebar__logo-toggle']}
             onClick={() => onCollapse(false)}
             aria-label={t('nav.toggleSidebar')}
         >
             {logoMark}
-            <span className={styles['ads-app-sidebar__expand-icon']}>
+            <span className={styles['tb-app-sidebar__expand-icon']}>
                 <MenuUnfoldOutlined />
             </span>
         </Button>
@@ -78,7 +78,7 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
 
     const menu = (
         <Menu
-            className={styles['ads-app-sidebar__menu']}
+            className={styles['tb-app-sidebar__menu']}
             mode="inline"
             inlineCollapsed={!isMobile && collapsed}
             items={items}
@@ -90,7 +90,7 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
     // Same fixed height as the brand header, pinned to the bottom — menu is the only part
     // of the sidebar that scrolls, in the space between this and the header.
     const footer = (
-        <div className={styles['ads-app-sidebar__footer']}>
+        <div className={styles['tb-app-sidebar__footer']}>
             {t('sidebarFooterText')}
         </div>
     );
@@ -99,13 +99,13 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
     // CSS custom properties on the shared ancestor so every actual style declaration still
     // lives in AppSidebar.module.scss, per frontend.md's inline-styling rule.
     const themeVars = {
-        '--ads-sidebar-divider-color': token.colorBorderSecondary,
-        '--ads-sidebar-badge-bg': token.colorPrimary,
-        '--ads-sidebar-badge-color': token.colorTextLightSolid,
+        '--tb-sidebar-divider-color': token.colorBorderSecondary,
+        '--tb-sidebar-badge-bg': token.colorPrimary,
+        '--tb-sidebar-badge-color': token.colorTextLightSolid,
     } as React.CSSProperties;
 
     const content = (
-        <div className={styles['ads-app-sidebar__inner']} style={themeVars}>
+        <div className={styles['tb-app-sidebar__inner']} style={themeVars}>
             {brand}
             {menu}
             {footer}
@@ -122,7 +122,7 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
 
     return (
         <Layout.Sider
-            className={styles['ads-app-sidebar']}
+            className={styles['tb-app-sidebar']}
             theme="light"
             trigger={null}
             collapsed={collapsed}

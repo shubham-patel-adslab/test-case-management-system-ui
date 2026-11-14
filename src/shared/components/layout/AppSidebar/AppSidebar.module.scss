@@ -1,4 +1,4 @@
-.ads-app-sidebar {
+.tb-app-sidebar {
     // Desktop only (this class is only ever applied to the Sider branch — mobile renders a
     // Drawer instead): pin to the full viewport height so it never scrolls away with the page;
     // the nav list scrolls internally instead, via &__menu below.
@@ -18,7 +18,7 @@
         height: 64px;
         padding-inline: 16px;
         flex-shrink: 0;
-        border-bottom: 1px solid var(--ads-sidebar-divider-color);
+        border-bottom: 1px solid var(--tb-sidebar-divider-color);
     }
 
     &__logo {
@@ -42,8 +42,8 @@
         flex-shrink: 0;
         border-radius: 6px;
         font-weight: 700;
-        background-color: var(--ads-sidebar-badge-bg);
-        color: var(--ads-sidebar-badge-color);
+        background-color: var(--tb-sidebar-badge-bg);
+        color: var(--tb-sidebar-badge-color);
     }
 
     &__logo-text {
@@ -56,13 +56,13 @@
         position: relative;
         height: 64px;
         flex-shrink: 0;
-        border-bottom: 1px solid var(--ads-sidebar-divider-color);
+        border-bottom: 1px solid var(--tb-sidebar-divider-color);
 
-        &:hover .ads-app-sidebar__logo-mark {
+        &:hover .tb-app-sidebar__logo-mark {
             opacity: 0;
         }
 
-        &:hover .ads-app-sidebar__expand-icon {
+        &:hover .tb-app-sidebar__expand-icon {
             opacity: 1;
         }
     }
@@ -91,6 +91,6 @@
         height: 64px;
         flex-shrink: 0;
         font-weight: 600;
-        border-top: 1px solid var(--ads-sidebar-divider-color);
+        border-top: 1px solid var(--tb-sidebar-divider-color);
     }
 }

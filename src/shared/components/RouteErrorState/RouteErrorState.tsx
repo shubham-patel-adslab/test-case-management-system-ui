@@ -16,7 +16,7 @@ export function RouteErrorState() {
     }, [error]);
 
     return (
-        <div className={styles['ads-route-error-state']}>
+        <div className={styles['tb-route-error-state']}>
             <Result
                 status="error"
                 title={t('routeError.title')}

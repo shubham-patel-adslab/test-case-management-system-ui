@@ -13,7 +13,7 @@ export function AppHeader({ onOpenSidebar }: AppHeaderProps) {
     const isMobile = !Grid.useBreakpoint().lg;
 
     return (
-        <Layout.Header className={styles['ads-app-header']}>
+        <Layout.Header className={styles['tb-app-header']}>
             {isMobile && (
                 <Button
                     type="text"
