@@ -30,12 +30,14 @@ With the defaults, the app runs against the MSW mock API, so no backend is requi
 | `VITE_TCMS_API_URL` | API root the axios client calls | `/api` |
 | `VITE_TCMS_API_MOCKING` | `true` serves API calls from MSW mocks (dev only) | `true` |
 
-To use a locally running backend, create `.env.development.local` (git-ignored):
+To use a locally running backend (tcms-api on port 3000), create `.env.development.local` (git-ignored):
 
 ```bash
-VITE_TCMS_API_URL=http://localhost:3000/api
 VITE_TCMS_API_MOCKING=false
 ```
+
+The Vite dev server proxies `/api` to `http://localhost:3000`, so `VITE_TCMS_API_URL` stays `/api` and
+the browser sees one origin (no CORS).
 
 ## Scripts
 
