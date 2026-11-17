@@ -1,3 +1,4 @@
+import { formatFullName } from '../../../shared/format/name.format';
 import type { RoleResponseDto, UserDetailsResponseDto } from '../user.response.dto';
 
 // Mock-only test accounts (MSW, development). The five named accounts sign in with this password; on the
@@ -29,7 +30,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 function mockUser(
     index: number,
     firstName: string,
-    lastName: string,
+    lastName: string | null,
     email: string,
     roleCode: string,
     status: MockUser['status'],
@@ -50,7 +51,7 @@ function mockUser(
     };
 }
 
-const teamMembers: [string, string, string, MockUser['status']][] = [
+const teamMembers: [string, string | null, string, MockUser['status']][] = [
     ['Aarav', 'Mehta', 'TEST_LEAD', 'ACTIVE'], ['Neha', 'Kapoor', 'TESTER', 'ACTIVE'],
     ['Vikram', 'Rao', 'TESTER', 'ACTIVE'], ['Sara', 'Thomas', 'READ_ONLY', 'ACTIVE'],
     ['Kabir', 'Singh', 'TESTER', 'INVITED'], ['Meera', 'Iyer', 'TEST_LEAD', 'ACTIVE'],
@@ -60,7 +61,7 @@ const teamMembers: [string, string, string, MockUser['status']][] = [
     ['Rohit', 'Kulkarni', 'TESTER', 'INACTIVE'], ['Isha', 'Reddy', 'READ_ONLY', 'ACTIVE'],
     ['Nikhil', 'Pandey', 'TESTER', 'ACTIVE'], ['Tara', 'Menon', 'TESTER', 'INVITED'],
     ['Varun', 'Chopra', 'TESTER', 'ACTIVE'], ['Pooja', 'Shah', 'TEST_LEAD', 'ACTIVE'],
-    ['Siddharth', 'Ghosh', 'TESTER', 'ACTIVE'], ['Kavya', '', 'READ_ONLY', 'ACTIVE'],
+    ['Siddharth', 'Ghosh', 'TESTER', 'ACTIVE'], ['Kavya', null, 'READ_ONLY', 'ACTIVE'],
 ];
 
 // Mutable on purpose: the user and invitation handlers write to it, and the auth mocks read it, so a
@@ -92,4 +93,12 @@ export function toUserDetailsResponse(user: MockUser): UserDetailsResponseDto {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
     };
+}
+
+// Same matching as the backend's user search: first, last, "first last" and email, case-insensitive.
+export function mockUserMatchesSearch(user: MockUser, search: string): boolean {
+    const term = search.trim().toLowerCase();
+
+    return !term || [user.firstName, user.lastName ?? '', formatFullName(user.firstName, user.lastName), user.email]
+        .some((value) => value.toLowerCase().includes(term));
 }

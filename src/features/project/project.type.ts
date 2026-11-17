@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { projectFormSchema } from './project.schema';
 import type { PROJECT_STATUSES } from './project.constant';
 import type { PageType } from '../../shared/type/page.type';
+import type { UserStatus } from '../user/user.type';
 
 export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
 
@@ -13,12 +14,18 @@ export type ProjectUpdateType = ProjectFormType & {
 };
 
 export type ProjectMemberType = {
-    id: number;
-    name: string;
+    id: string;
+    firstName: string;
+    lastName: string | null;
     email: string;
+    status: UserStatus;
+    role: {
+        code: string;
+        name: string;
+    };
 };
 
-export type ProjectDetailsType = ProjectFormType & {
+export type ProjectDetailsType = Omit<ProjectFormType, 'memberIds'> & {
     id: number;
     members: ProjectMemberType[];
     createdAt: string;
@@ -26,3 +33,5 @@ export type ProjectDetailsType = ProjectFormType & {
 };
 
 export type ProjectPageType = PageType<ProjectDetailsType>;
+
+export type ProjectMemberCandidatePageType = PageType<ProjectMemberType>;

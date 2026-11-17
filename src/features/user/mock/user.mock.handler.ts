@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { roleMock, toUserDetailsResponse, userMock, type MockUser } from './user.mock.data';
+import { mockUserMatchesSearch, roleMock, toUserDetailsResponse, userMock, type MockUser } from './user.mock.data';
 import type { UserCreateRequestDto, UserStatusUpdateRequestDto, UserUpdateRequestDto } from '../user.request.dto';
 import type { UserDetailsResponseDto, UserPageResponseDto } from '../user.response.dto';
 import { getMockSessionUser, mockErrorResponse, withMockPermission } from '../../auth/mock/auth.mock.handler';
@@ -41,11 +41,10 @@ export const userMockHandler = [
         const search = url.searchParams.get('search')?.trim().toLowerCase();
         const status = url.searchParams.get('status');
 
-        // Same matching as the backend: first, last, "first last" and email, case-insensitive; newest first.
+        // Newest first, like the backend.
         const matches = userMock
             .filter((user) => !status || user.status === status)
-            .filter((user) => !search || [user.firstName, user.lastName, `${user.firstName} ${user.lastName}`, user.email]
-                .some((value) => value.toLowerCase().includes(search)))
+            .filter((user) => mockUserMatchesSearch(user, search ?? ''))
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
         const startIndex = (page - 1) * pageSize;
@@ -83,7 +82,7 @@ export const userMockHandler = [
         const user: MockUser = {
             id: crypto.randomUUID(),
             firstName: body.firstName.trim(),
-            lastName: body.lastName.trim(),
+            lastName: body.lastName.trim() || null, // like the API: blank is stored as null
             email,
             status: 'INVITED',
             role,
@@ -131,7 +130,7 @@ export const userMockHandler = [
 
         Object.assign(user, {
             firstName: body.firstName.trim(),
-            lastName: body.lastName.trim(),
+            lastName: body.lastName.trim() || null, // like the API: blank is stored as null
             email,
             role,
             updatedAt: new Date().toISOString(),

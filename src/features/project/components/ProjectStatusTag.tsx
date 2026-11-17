@@ -5,10 +5,10 @@ import type { ProjectStatus } from '../project.type';
 
 // antd preset tag colors — named theme presets, not raw color values.
 const STATUS_COLOR: Record<ProjectStatus, string> = {
-    'active': 'green',
-    'on-hold': 'orange',
-    'completed': 'blue',
-    'archived': 'default',
+    ACTIVE: 'green',
+    ON_HOLD: 'orange',
+    COMPLETED: 'blue',
+    ARCHIVED: 'default',
 };
 
 type ProjectStatusTagProps = {

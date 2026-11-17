@@ -24,19 +24,22 @@ export function UserMenu() {
         return null;
     }
 
+    // The account line is information, not an action: a group title (plain text, no hover, not focusable),
+    // not a disabled item, which would look and read as an unavailable action.
     const items: MenuProps['items'] = [
         {
+            type: 'group',
             key: 'account',
             label: `${session.user.email} · ${session.role.name}`,
-            disabled: true,
-        },
-        { type: 'divider' },
-        {
-            key: 'sign-out',
-            icon: <LogoutOutlined />,
-            label: t('userMenu.signOut'),
-            disabled: signOutMutation.isPending,
-            onClick: () => signOutMutation.mutate(),
+            children: [
+                {
+                    key: 'sign-out',
+                    icon: <LogoutOutlined />,
+                    label: t('userMenu.signOut'),
+                    disabled: signOutMutation.isPending,
+                    onClick: () => signOutMutation.mutate(),
+                },
+            ],
         },
     ];
 

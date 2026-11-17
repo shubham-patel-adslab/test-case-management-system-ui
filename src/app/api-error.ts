@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios';
 
-import type { ErrorResponseDto } from '../shared/response/error.response.dto';
+import type { ErrorDetailDto, ErrorResponseDto } from '../shared/response/error.response.dto';
 
 // Codes the UI branches on (ui-requirements §6.2). The full list lives in the backend.
 export const API_ERROR_CODE = {
@@ -8,6 +8,8 @@ export const API_ERROR_CODE = {
     INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
     ACCOUNT_INACTIVE: 'ACCOUNT_INACTIVE',
     INVALID_INVITATION: 'INVALID_INVITATION',
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
+    NOT_FOUND: 'NOT_FOUND',
     CONFLICT: 'CONFLICT',
     EMAIL_DELIVERY_FAILED: 'EMAIL_DELIVERY_FAILED',
 } as const;
@@ -19,12 +21,17 @@ function isErrorResponseDto(data: unknown): data is ErrorResponseDto {
         && typeof (data as ErrorResponseDto).error?.code === 'string';
 }
 
-export function getApiErrorCode(error: unknown): string | undefined {
-    if (!isAxiosError(error) || !isErrorResponseDto(error.response?.data)) {
-        return undefined;
-    }
+function getErrorResponse(error: unknown): ErrorResponseDto | undefined {
+    return isAxiosError(error) && isErrorResponseDto(error.response?.data) ? error.response.data : undefined;
+}
 
-    return error.response.data.error.code;
+export function getApiErrorCode(error: unknown): string | undefined {
+    return getErrorResponse(error)?.error.code;
+}
+
+// Field-level details of a VALIDATION_ERROR (`field` is the request path, e.g. "memberIds[2]").
+export function getApiErrorDetails(error: unknown): ErrorDetailDto[] {
+    return getErrorResponse(error)?.error.details ?? [];
 }
 
 // "Signed out" 401s — everything except a wrong password on the sign-in form.

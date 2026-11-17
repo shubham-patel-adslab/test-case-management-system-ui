@@ -5,6 +5,7 @@ export const rolePermissionsMock: Record<string, AuthPermissionsResponseDto> = {
     ADMIN: {
         PROJECT: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
         USER: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
+        ALL_PROJECTS: ['READ', 'UPDATE', 'DELETE'],
     },
     TEST_LEAD: { PROJECT: ['CREATE', 'READ', 'UPDATE'] },
     TESTER: { PROJECT: ['READ'] },

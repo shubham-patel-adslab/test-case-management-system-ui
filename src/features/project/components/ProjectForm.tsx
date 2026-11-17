@@ -1,33 +1,44 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Button, Form } from 'antd';
+import { Form } from 'antd';
 
 import { projectFormSchema } from '../project.schema';
 import { PROJECT_STATUSES } from '../project.constant';
-import type { ProjectFormType } from '../project.type';
+import type { ProjectFormType, ProjectMemberType } from '../project.type';
+import { ProjectMemberSelect } from './ProjectMemberSelect';
 import { FormTextField } from '../../../shared/components/form/FormTextField';
 import { FormTextAreaField } from '../../../shared/components/form/FormTextAreaField';
 import { FormSelectField } from '../../../shared/components/form/FormSelectField';
+import { FormActions } from '../../../shared/components/form/FormActions';
 
 // Create mode starts from these: every field needs a defined value for the zod string checks,
-// and new projects start out active.
-const CREATE_DEFAULT_VALUES: ProjectFormType = {
+// and new projects start out active. The team starts as `initialMembers`.
+const CREATE_DEFAULT_VALUES: Omit<ProjectFormType, 'memberIds'> = {
     name: '',
     description: '',
     version: '',
-    status: 'active',
+    status: 'ACTIVE',
 };
 
 type ProjectFormProps = {
     defaultValues?: ProjectFormType;
+    // The team as loaded on update; on create, whoever starts on it (the creator, when locked).
+    initialMembers: ProjectMemberType[];
+    // A member the user can't remove (themselves, when they only see their own projects).
+    lockedMemberId?: string;
     onSubmit: (data: ProjectFormType) => void | Promise<void>;
+    // Leaves the form without saving; the page decides where to go.
+    onCancel: () => void;
     isSubmitting: boolean;
 };
 
 export function ProjectForm({
     defaultValues,
+    initialMembers,
+    lockedMemberId,
     onSubmit,
+    onCancel,
     isSubmitting
 }: ProjectFormProps) {
     const { t } = useTranslation('project');
@@ -39,7 +50,10 @@ export function ProjectForm({
         formState: { errors, isDirty },
     } = useForm<ProjectFormType>({
         resolver: zodResolver(projectFormSchema),
-        defaultValues: defaultValues ?? CREATE_DEFAULT_VALUES,
+        defaultValues: defaultValues ?? {
+            ...CREATE_DEFAULT_VALUES,
+            memberIds: initialMembers.map((member) => member.id),
+        },
     });
 
     // Create: always submittable (until in flight). Update: nothing to save until the form actually changes.
@@ -90,11 +104,20 @@ export function ProjectForm({
                     t={t}
                 />
 
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={isSubmitting} disabled={isSubmitDisabled}>
-                        {t('form.submit')}
-                    </Button>
-                </Form.Item>
+                <ProjectMemberSelect
+                    control={control}
+                    initialMembers={initialMembers}
+                    lockedMemberId={lockedMemberId}
+                    errorMessage={errors.memberIds?.message}
+                />
+
+                <FormActions
+                    submitLabel={t('form.submit')}
+                    isSubmitting={isSubmitting}
+                    isSubmitDisabled={isSubmitDisabled}
+                    isDirty={isDirty}
+                    onCancel={onCancel}
+                />
             </Form>
         </form>
     );

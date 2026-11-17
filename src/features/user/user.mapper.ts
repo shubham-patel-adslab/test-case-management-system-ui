@@ -36,7 +36,7 @@ export function toUserDetails(dto: UserDetailsResponseDto): UserDetailsType {
 export function toUserFormValues(user: UserDetailsType): UserFormType {
     return {
         firstName: user.firstName,
-        lastName: user.lastName,
+        lastName: user.lastName ?? '', // the input needs a string; "" is sent back, which the API stores as null
         email: user.email,
         roleCode: user.role.code,
     };

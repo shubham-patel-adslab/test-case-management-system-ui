@@ -1,9 +1,15 @@
 import { toPageType } from '../../shared/mapper/page.mapper';
 import type { ProjectCreateRequestDto, ProjectUpdateRequestDto } from './project.request.dto';
-import type { ProjectDetailsResponseDto, ProjectMemberResponseDto, ProjectPageResponseDto } from './project.response.dto';
+import type {
+    ProjectDetailsResponseDto,
+    ProjectMemberCandidatePageResponseDto,
+    ProjectMemberResponseDto,
+    ProjectPageResponseDto,
+} from './project.response.dto';
 import type {
     ProjectDetailsType,
     ProjectFormType,
+    ProjectMemberCandidatePageType,
     ProjectMemberType,
     ProjectPageType,
     ProjectUpdateType,
@@ -15,6 +21,7 @@ export function toProjectCreateRequestDto(form: ProjectFormType): ProjectCreateR
         description: form.description,
         version: form.version,
         status: form.status,
+        memberIds: form.memberIds,
     };
 }
 
@@ -25,11 +32,14 @@ export function toProjectUpdateRequestDto(form: ProjectUpdateType): ProjectUpdat
     };
 }
 
-function toProjectMember(dto: ProjectMemberResponseDto): ProjectMemberType {
+export function toProjectMember(dto: ProjectMemberResponseDto): ProjectMemberType {
     return {
         id: dto.id,
-        name: dto.name,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
         email: dto.email,
+        status: dto.status,
+        role: { code: dto.role.code, name: dto.role.name },
     };
 }
 
@@ -53,9 +63,14 @@ export function toProjectFormValues(project: ProjectDetailsType): ProjectFormTyp
         description: project.description,
         version: project.version,
         status: project.status,
+        memberIds: project.members.map((member) => member.id),
     };
 }
 
 export function toProjectPage(dto: ProjectPageResponseDto): ProjectPageType {
     return toPageType(dto, toProjectDetails);
+}
+
+export function toProjectMemberCandidatePage(dto: ProjectMemberCandidatePageResponseDto): ProjectMemberCandidatePageType {
+    return toPageType(dto, toProjectMember);
 }

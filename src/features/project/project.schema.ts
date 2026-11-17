@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import {
     PROJECT_DESCRIPTION_MAX_LENGTH,
+    PROJECT_MEMBERS_MAX,
     PROJECT_NAME_MAX_LENGTH,
     PROJECT_STATUSES,
     PROJECT_VERSION_MAX_LENGTH,
@@ -23,4 +24,7 @@ export const projectFormSchema = z.object({
         .trim()
         .max(PROJECT_VERSION_MAX_LENGTH, { message: 'validation.versionMaxLength' }),
     status: z.enum(PROJECT_STATUSES, { message: 'validation.statusRequired' }),
+    // The whole team (user ids). Optional to fill: an empty team is valid.
+    memberIds: z.array(z.string())
+        .max(PROJECT_MEMBERS_MAX, { message: 'validation.membersMax' }),
 });

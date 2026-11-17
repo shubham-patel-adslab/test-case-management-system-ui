@@ -21,7 +21,7 @@ export type UserRoleType = {
 export type UserDetailsType = {
     id: string;
     firstName: string;
-    lastName: string;
+    lastName: string | null;
     email: string;
     status: UserStatus;
     role: UserRoleType;

@@ -13,7 +13,7 @@ export type AuthSetPasswordFormType = z.infer<typeof authSetPasswordFormSchema>;
 export type AuthUserType = {
     id: string;
     firstName: string;
-    lastName: string;
+    lastName: string | null;
     email: string;
 };
 

@@ -1,18 +1,19 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router';
 import { Alert, Button, Form, Result } from 'antd';
 
 import { INVITATION_TOKEN_PARAM, SIGN_IN_PATH } from '../auth.constant';
-import { acceptInvitation } from '../auth.api';
+import { acceptInvitation, verifyInvitation } from '../auth.api';
 import { toInvitationAcceptRequestDto } from '../auth.mapper';
 import { authSetPasswordFormSchema } from '../auth.schema';
 import type { AuthSetPasswordFormType } from '../auth.type';
 import { AuthPageLayout } from '../components/AuthPageLayout';
 import { API_ERROR_CODE, getApiErrorCode } from '../../../app/api-error';
 import { FormTextField } from '../../../shared/components/form/FormTextField';
+import { QueryLoadingState } from '../../../shared/components/QueryLoadingState';
 
 // The invitation link is /set-password#token=… — a fragment never reaches a server or a Referer header.
 function readInvitationToken(hash: string): string | null {
@@ -27,6 +28,15 @@ type SetPasswordFormProps = {
 // an error from one link never sticks to the next.
 function SetPasswordForm({ token }: SetPasswordFormProps) {
     const { t } = useTranslation('auth');
+
+    // Checked once on opening, so a used or expired link says so before the user types a password. Accept
+    // below stays the real guard (the link can still expire while the form is open).
+    const verifyQuery = useQuery({
+        queryKey: ['invitations', 'verify', token],
+        queryFn: ({ signal }) => verifyInvitation({ token }, signal),
+        staleTime: Infinity, // one check per opening — no re-check on window focus
+        gcTime: 0, // don't keep the token in the cache after leaving the page
+    });
 
     const acceptMutation = useMutation({ mutationFn: acceptInvitation });
 
@@ -51,8 +61,16 @@ function SetPasswordForm({ token }: SetPasswordFormProps) {
         );
     }
 
-    if (getApiErrorCode(acceptMutation.error) === API_ERROR_CODE.INVALID_INVITATION) {
+    const isInvalidLink = [verifyQuery.error, acceptMutation.error]
+        .some((error) => getApiErrorCode(error) === API_ERROR_CODE.INVALID_INVITATION);
+
+    if (isInvalidLink) {
         return <InvalidLinkState />;
+    }
+
+    // Any other failed check (network, 5xx) still shows the form: submitting it validates the link anyway.
+    if (verifyQuery.isPending) {
+        return <QueryLoadingState fullPage />;
     }
 
     return (

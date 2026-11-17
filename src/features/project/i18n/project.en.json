@@ -4,6 +4,12 @@
         "descriptionLabel": "Description",
         "versionLabel": "Version",
         "statusLabel": "Status",
+        "membersLabel": "Team members",
+        "membersPlaceholder": "Search by name or email",
+        "membersLoading": "Searching…",
+        "membersNotFound": "No matching users",
+        "membersMore": "Showing {{shown}} of {{total}} — type to narrow the list",
+        "membersSelfLocked": "You stay on the team of projects you work on, so you can't remove yourself.",
         "submit": "Submit"
     },
     "validation": {
@@ -11,13 +17,14 @@
         "nameMaxLength": "Name must be at most 100 characters",
         "descriptionMaxLength": "Description must be at most 1000 characters",
         "versionMaxLength": "Version must be at most 20 characters",
-        "statusRequired": "Status is required"
+        "statusRequired": "Status is required",
+        "membersMax": "A team can have at most 100 members"
     },
     "status": {
-        "active": "Active",
-        "on-hold": "On hold",
-        "completed": "Completed",
-        "archived": "Archived"
+        "ACTIVE": "Active",
+        "ON_HOLD": "On hold",
+        "COMPLETED": "Completed",
+        "ARCHIVED": "Archived"
     },
     "page": {
         "paginationTitle": "Projects",
@@ -26,9 +33,16 @@
         "updateTitle": "Update Project"
     },
     "view": {
-        "membersLabel": "Members",
         "createdAtLabel": "Created",
         "updatedAtLabel": "Last updated"
+    },
+    "members": {
+        "title": "Team ({{count}})",
+        "nameColumn": "Name",
+        "emailColumn": "Email",
+        "roleColumn": "Role",
+        "statusColumn": "Status",
+        "empty": "No team members yet"
     },
     "table": {
         "nameColumn": "Name",
@@ -44,6 +58,7 @@
     "notifications": {
         "createSuccess": "Project created successfully",
         "updateSuccess": "Project updated successfully",
-        "saveError": "Failed to save project. Please try again."
+        "saveError": "Failed to save project. Please try again.",
+        "memberUnavailable": "A selected member can no longer be added (deactivated or removed). Remove them and save again."
     }
 }

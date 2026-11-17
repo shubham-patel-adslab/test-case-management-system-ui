@@ -1,7 +1,7 @@
 import { http, HttpResponse, type HttpResponseResolver } from 'msw';
 
 import { rolePermissionsMock } from './auth.mock.data';
-import type { AuthSignInRequestDto, InvitationAcceptRequestDto } from '../auth.request.dto';
+import type { AuthSignInRequestDto, InvitationAcceptRequestDto, InvitationVerifyRequestDto } from '../auth.request.dto';
 import type { AuthorizationContextResponseDto, AuthUserResponseDto } from '../auth.response.dto';
 import { PASSWORD_MIN_LENGTH } from '../auth.constant';
 import type { PermissionCode, ResourceCode } from '../auth.type';
@@ -38,6 +38,10 @@ export function withMockAuth(resolver: HttpResponseResolver): HttpResponseResolv
         : mockErrorResponse(401, 'UNAUTHORIZED', 'Authentication required');
 }
 
+export function mockHasPermission(user: MockUser, resource: ResourceCode, permission: PermissionCode): boolean {
+    return rolePermissionsMock[user.role.code]?.[resource]?.includes(permission) ?? false;
+}
+
 // Like the backend's authorize(resource, permission): 401 when signed out, 403 without the grant.
 export function withMockPermission(
     resource: ResourceCode,
@@ -45,9 +49,7 @@ export function withMockPermission(
     resolver: HttpResponseResolver,
 ): HttpResponseResolver {
     return withMockAuth((info) => {
-        const permissions = rolePermissionsMock[getMockSessionUser()!.role.code] ?? {};
-
-        return permissions[resource]?.includes(permission)
+        return mockHasPermission(getMockSessionUser()!, resource, permission)
             ? resolver(info)
             : mockErrorResponse(403, 'FORBIDDEN', `Missing permission ${resource} ${permission}`);
     });
@@ -91,6 +93,18 @@ export const authMockHandler = [
 
         return HttpResponse.json(response);
     })),
+
+    // Public: checks the link without using it up.
+    http.post(`${API_URL}/invitations/verify`, async ({ request }) => {
+        const body = await request.json() as InvitationVerifyRequestDto;
+        const user = userMock.find((user) => user.status === 'INVITED' && user.invitationToken === body.token);
+
+        if (!user) {
+            return mockErrorResponse(400, 'INVALID_INVITATION', 'This invitation link is invalid or has expired');
+        }
+
+        return new HttpResponse(null, { status: 204 });
+    }),
 
     // Public, like the backend: the token from the invitation link is the proof.
     http.post(`${API_URL}/invitations/accept`, async ({ request }) => {

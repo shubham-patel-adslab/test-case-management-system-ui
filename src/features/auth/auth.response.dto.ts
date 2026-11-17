@@ -2,7 +2,7 @@
 export type AuthUserResponseDto = {
     id: string;
     firstName: string;
-    lastName: string;
+    lastName: string | null; // null when the user has no last name
     email: string;
 };
 

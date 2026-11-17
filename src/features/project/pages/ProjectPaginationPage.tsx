@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { Button, Flex, Table, Typography, type TableColumnsType } from 'antd';
+import { Button, Flex, Table, type TableColumnsType } from 'antd';
 
 import { ProjectStatusTag } from '../components/ProjectStatusTag';
 import { getProjects } from '../project.api';
 import { toProjectPage } from '../project.mapper';
 import type { ProjectDetailsType } from '../project.type';
+import { useAuth } from '../../auth/auth.context';
+import { PERMISSION_CODE, RESOURCE_CODE } from '../../auth/auth.constant';
+import { PageHeader } from '../../../shared/components/PageHeader';
 import { QueryErrorState } from '../../../shared/components/QueryErrorState';
 import { QueryLoadingState } from '../../../shared/components/QueryLoadingState';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../../../shared/constant/page.constant';
@@ -14,6 +17,7 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../../../sha
 export function ProjectPaginationPage() {
     const { t } = useTranslation('project');
     const navigate = useNavigate();
+    const { can } = useAuth();
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -35,6 +39,7 @@ export function ProjectPaginationPage() {
     }
 
     const projectPage = toProjectPage(projectQuery.data);
+    const canUpdate = can(RESOURCE_CODE.PROJECT, PERMISSION_CODE.UPDATE);
 
     const columns: TableColumnsType<ProjectDetailsType> = [
         {
@@ -65,9 +70,11 @@ export function ProjectPaginationPage() {
                     <Button type="link" onClick={() => void navigate(`/projects/${project.id}`)}>
                         {t('action.view')}
                     </Button>
-                    <Button type="link" onClick={() => void navigate(`/projects/${project.id}/update`)}>
-                        {t('action.edit')}
-                    </Button>
+                    {canUpdate && (
+                        <Button type="link" onClick={() => void navigate(`/projects/${project.id}/update`)}>
+                            {t('action.edit')}
+                        </Button>
+                    )}
                 </Flex>
             ),
         },
@@ -75,12 +82,14 @@ export function ProjectPaginationPage() {
 
     return (
         <>
-            <Flex justify="space-between" align="center">
-                <Typography.Title level={3}>{t('page.paginationTitle')}</Typography.Title>
-                <Button type="primary" onClick={() => void navigate('/projects/create')}>
-                    {t('page.addProject')}
-                </Button>
-            </Flex>
+            <PageHeader
+                title={t('page.paginationTitle')}
+                actions={can(RESOURCE_CODE.PROJECT, PERMISSION_CODE.CREATE) && (
+                    <Button type="primary" onClick={() => void navigate('/projects/create')}>
+                        {t('page.addProject')}
+                    </Button>
+                )}
+            />
 
             <Table<ProjectDetailsType>
                 rowKey="id"

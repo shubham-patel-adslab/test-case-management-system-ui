@@ -60,13 +60,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Any 401 UNAUTHORIZED from any request (expired token, deactivated account) ends the session here;
     // ProtectedRoute then redirects to sign-in.
     useEffect(() => setUnauthorizedHandler(() => {
-        const wasSignedIn = queryClient.getQueryData(AUTH_SESSION_QUERY_KEY) != null;
+        // Signed out already: nothing to clear (that happened when the session ended). Clearing anyway would
+        // remove the queries of a mounted public page, which refetch, get 401 again and loop.
+        if (queryClient.getQueryData(AUTH_SESSION_QUERY_KEY) == null) {
+            return;
+        }
 
         clearSession(queryClient);
-
-        if (wasSignedIn) {
-            void message.warning(t('notifications.sessionExpired'));
-        }
+        void message.warning(t('notifications.sessionExpired'));
     }), [queryClient, message, t]);
 
     // Children render only once the session is known, so route guards never act on a half-loaded state.

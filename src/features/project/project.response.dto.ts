@@ -1,12 +1,19 @@
 import type { PageResponseDto } from '../../shared/response/page.response.dto';
+import type { UserStatus } from '../user/user.type';
 import type { ProjectStatus } from './project.type';
 
-// Members also carry `role` on the wire (ui-requirements §6.5). It's left out until the
-// auth/user feature defines the Role type — nothing in the project screens reads it yet.
+// A team member, or a candidate in the member picker. `status` marks invited members and members who
+// were deactivated after joining (they stay on the team).
 export type ProjectMemberResponseDto = {
-    id: number;
-    name: string;
+    id: string;
+    firstName: string;
+    lastName: string | null;
     email: string;
+    status: UserStatus;
+    role: {
+        code: string;
+        name: string;
+    };
 };
 
 export type ProjectDetailsResponseDto = {
@@ -21,3 +28,5 @@ export type ProjectDetailsResponseDto = {
 };
 
 export type ProjectPageResponseDto = PageResponseDto<ProjectDetailsResponseDto>;
+
+export type ProjectMemberCandidatePageResponseDto = PageResponseDto<ProjectMemberResponseDto>;
