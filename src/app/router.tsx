@@ -1,20 +1,36 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 
-import { AppLayout } from '../shared/components/layout/AppLayout';
+import { AppShell } from './AppShell';
 import { NotFoundState } from '../shared/components/NotFoundState';
 import { RouteErrorState } from '../shared/components/RouteErrorState';
 
+import { authRoutes } from '../features/auth/auth.routes';
+import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
 import { projectRoutes } from '../features/project/project.routes';
+import { userRoutes } from '../features/user/user.routes';
 
 export const router = createBrowserRouter([
     {
-        element: <AppLayout />,
         errorElement: <RouteErrorState />,
         children: [
-            { index: true, element: <Navigate to="/projects" replace /> },
-            ...projectRoutes,
-            // Inside the layout so unknown URLs keep the sidebar/header for navigating back.
-            { path: '*', element: <NotFoundState /> },
-        ]
-    }
+            // Public.
+            ...authRoutes,
+            // Everything else requires a signed-in user.
+            {
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        element: <AppShell />,
+                        children: [
+                            { index: true, element: <Navigate to="/projects" replace /> },
+                            ...projectRoutes,
+                            ...userRoutes,
+                            // Inside the layout so unknown URLs keep the sidebar/header for navigating back.
+                            { path: '*', element: <NotFoundState /> },
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
 ]);

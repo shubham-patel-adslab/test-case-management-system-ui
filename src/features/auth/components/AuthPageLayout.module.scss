@@ -1,0 +1,17 @@
+.tb-auth-page {
+    box-sizing: border-box; // padding inside the 100vh, or the page overflows by 2 × padding and scrolls
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.tb-auth-page__card {
+    width: 100%;
+    max-width: 400px;
+}
+
+.tb-auth-page__alert {
+    margin-block-end: 16px;
+}

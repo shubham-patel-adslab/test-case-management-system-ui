@@ -1,6 +1,13 @@
+// Default: inside the app layout's content area, below the header — sized by its content, not the viewport.
 .tb-query-loading-state {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    padding-block: 48px;
+
+    // Standalone screen with no layout around it (session bootstrap, public-page fallback).
+    &--full-page {
+        box-sizing: border-box;
+        min-height: 100vh;
+    }
 }

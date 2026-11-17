@@ -1,0 +1,42 @@
+{
+    "page": {
+        "title": "Sign in to TCMS"
+    },
+    "form": {
+        "emailLabel": "Email",
+        "passwordLabel": "Password",
+        "submit": "Sign in"
+    },
+    "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address",
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 8 characters",
+        "passwordMaxLength": "Password is too long (maximum 72 bytes)",
+        "confirmPasswordRequired": "Confirm your password",
+        "passwordMismatch": "Passwords do not match"
+    },
+    "errors": {
+        "invalidCredentials": "Invalid email or password.",
+        "accountInactive": "This account has been deactivated. Contact an administrator.",
+        "generic": "Sign-in failed. Please try again."
+    },
+    "userMenu": {
+        "label": "Account menu",
+        "signOut": "Sign out"
+    },
+    "notifications": {
+        "sessionExpired": "Your session has expired. Please sign in again.",
+        "signOutError": "Failed to sign out. Please try again."
+    },
+    "setPassword": {
+        "title": "Set your password",
+        "passwordLabel": "New password",
+        "confirmPasswordLabel": "Confirm password",
+        "submit": "Set password",
+        "successTitle": "Your password is set. You can now sign in.",
+        "signIn": "Go to sign in",
+        "invalidLink": "This link is invalid or has expired. Ask an administrator to resend the invitation.",
+        "genericError": "Setting the password failed. Please try again."
+    }
+}

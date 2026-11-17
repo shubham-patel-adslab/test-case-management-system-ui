@@ -1,0 +1,76 @@
+{
+    "form": {
+        "firstNameLabel": "First name",
+        "lastNameLabel": "Last name",
+        "emailLabel": "Email",
+        "roleLabel": "Role",
+        "ownRoleLocked": "You can't change your own role.",
+        "submitInvite": "Send invitation",
+        "submitUpdate": "Save"
+    },
+    "validation": {
+        "firstNameRequired": "First name is required",
+        "nameMaxLength": "Must be at most 100 characters",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address",
+        "emailMaxLength": "Email must be at most 254 characters",
+        "roleRequired": "Role is required"
+    },
+    "status": {
+        "INVITED": "Invited",
+        "ACTIVE": "Active",
+        "INACTIVE": "Inactive"
+    },
+    "page": {
+        "paginationTitle": "Users",
+        "inviteUser": "Invite user",
+        "createTitle": "Invite user",
+        "updateTitle": "Update user"
+    },
+    "filter": {
+        "searchPlaceholder": "Search name or email",
+        "statusLabel": "Status",
+        "allStatuses": "All statuses"
+    },
+    "table": {
+        "nameColumn": "Name",
+        "emailColumn": "Email",
+        "roleColumn": "Role",
+        "statusColumn": "Status",
+        "createdColumn": "Created",
+        "actionColumn": "Action"
+    },
+    "view": {
+        "createdAtLabel": "Created",
+        "updatedAtLabel": "Last updated"
+    },
+    "action": {
+        "view": "View",
+        "edit": "Edit",
+        "deactivate": "Deactivate",
+        "activate": "Activate",
+        "resendInvitation": "Resend invitation",
+        "ownStatusLocked": "You can't change your own status."
+    },
+    "confirm": {
+        "deactivate": "Deactivate this user? They are signed out on their next request and can't sign in.",
+        "activate": "Activate this user? A user who never set a password goes back to Invited.",
+        "ok": "Yes",
+        "cancel": "Cancel"
+    },
+    "notifications": {
+        "inviteSuccess": "Invitation sent to {{email}}",
+        "updateSuccess": "User updated successfully",
+        "saveError": "Failed to save user. Please try again.",
+        "emailInUse": "This email is already in use.",
+        "createdEmailFailed": "The user was created, but the invitation email could not be sent. Open the user and resend the invitation.",
+        "updatedEmailFailed": "The user was updated, but the invitation email could not be sent. Resend the invitation.",
+        "deactivateSuccess": "User deactivated",
+        "activateSuccess": "User activated",
+        "statusError": "Failed to change the user's status. Please try again.",
+        "resendSuccess": "Invitation sent again",
+        "resendNotInvited": "This user has already set a password.",
+        "emailDeliveryFailed": "The invitation email could not be sent. Please try again.",
+        "resendError": "Failed to resend the invitation. Please try again."
+    }
+}

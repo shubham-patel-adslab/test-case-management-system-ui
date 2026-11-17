@@ -15,6 +15,9 @@ type FormSelectFieldProps<TFieldValues extends FieldValues> = {
     error?: FieldError;
     t: TFunction;
     required?: boolean;
+    disabled?: boolean;
+    // Help text under the field (e.g. why it's disabled).
+    extra?: string;
 };
 
 export function FormSelectField<TFieldValues extends FieldValues>({
@@ -25,6 +28,8 @@ export function FormSelectField<TFieldValues extends FieldValues>({
     error,
     t,
     required,
+    disabled,
+    extra,
 }: FormSelectFieldProps<TFieldValues>) {
     return (
         <Form.Item
@@ -33,11 +38,12 @@ export function FormSelectField<TFieldValues extends FieldValues>({
             required={required}
             validateStatus={error ? 'error' : ''}
             help={error?.message && t(error.message)}
+            extra={extra}
         >
             <Controller
                 name={name}
                 control={control}
-                render={({ field }) => <Select id={name} options={options} {...field} />}
+                render={({ field }) => <Select id={name} options={options} disabled={disabled} {...field} />}
             />
         </Form.Item>
     );

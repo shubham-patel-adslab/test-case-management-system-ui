@@ -1,0 +1,9 @@
+.tb-page-header {
+    margin-block-end: 16px;
+
+    // The header owns the spacing below it; antd's default title margin would double it. Nested so the
+    // selector outranks antd's single-class title rule.
+    .tb-page-header__title {
+        margin-block-end: 0;
+    }
+}

@@ -3,6 +3,7 @@
     "sidebarFooterText": "TechBridge",
     "nav": {
         "projects": "Projects",
+        "users": "Users",
         "toggleSidebar": "Toggle sidebar",
         "openSidebar": "Open navigation menu"
     },
@@ -20,5 +21,17 @@
         "title": "Something went wrong",
         "subTitle": "An unexpected error occurred while rendering this page.",
         "reload": "Reload page"
+    },
+    "forbidden": {
+        "title": "Access denied",
+        "subTitle": "You don't have permission to view this page.",
+        "backHome": "Back to home"
+    },
+    "form": {
+        "cancel": "Cancel",
+        "discardTitle": "Discard changes?",
+        "discardDescription": "Your unsaved changes will be lost.",
+        "discard": "Discard",
+        "keepEditing": "Keep editing"
     }
 }

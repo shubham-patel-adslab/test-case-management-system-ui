@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { MenuFoldOutlined, MenuUnfoldOutlined, ProjectOutlined } from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Button, Drawer, Grid, Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { Link, useLocation } from 'react-router';
@@ -7,16 +7,22 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './AppSidebar.module.scss';
 
-const NAV_ITEMS: { key: string; path: string; icon: React.ReactNode; labelKey: string }[] = [
-    { key: 'projects', path: '/projects', icon: <ProjectOutlined />, labelKey: 'nav.projects' },
-];
+export type AppNavItem = {
+    key: string;
+    path: string;
+    icon: React.ReactNode;
+    // i18n key in the 'common' namespace.
+    labelKey: string;
+};
 
 type AppSidebarProps = {
     collapsed: boolean;
     onCollapse: (collapsed: boolean) => void;
+    // Supplied by the app (already filtered by permission), so this shared component knows no features.
+    navItems: AppNavItem[];
 };
 
-export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onCollapse, navItems }: AppSidebarProps) {
     const { t } = useTranslation('common');
     const location = useLocation();
     const { token } = theme.useToken();
@@ -30,9 +36,9 @@ export function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
         onCollapse(isMobile);
     }, [isMobile, onCollapse]);
 
-    const selectedKey = NAV_ITEMS.find((item) => location.pathname.startsWith(item.path))?.key;
+    const selectedKey = navItems.find((item) => location.pathname.startsWith(item.path))?.key;
 
-    const items: MenuProps['items'] = NAV_ITEMS.map((item) => ({
+    const items: MenuProps['items'] = navItems.map((item) => ({
         key: item.key,
         icon: item.icon,
         label: <Link to={item.path}>{t(item.labelKey)}</Link>

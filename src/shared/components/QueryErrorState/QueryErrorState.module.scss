@@ -1,6 +1,12 @@
+// Default: inside the app layout's content area — antd's Result already brings its own vertical padding.
 .tb-query-error-state {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+
+    // Standalone screen with no layout around it (session bootstrap failure).
+    &--full-page {
+        box-sizing: border-box;
+        min-height: 100vh;
+    }
 }

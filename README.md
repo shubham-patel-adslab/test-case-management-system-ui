@@ -1,7 +1,6 @@
 # TCMS UI
 
-React frontend for the Test Case Management System. The backend (Node.js/Express, PostgreSQL, Redis)
-lives in a separate repository.
+React frontend for the Test Case Management System.
 
 - Requirements: [document/prd.md](document/prd.md) (full assignment) and
   [document/ui-requirements.md](document/ui-requirements.md) (UI scope and API contract).
@@ -21,7 +20,20 @@ npm install
 npm run dev
 ```
 
-With the defaults, the app runs against the MSW mock API, so no backend is required.
+With mocking on (`VITE_TCMS_API_MOCKING=true`), the app runs against the MSW mock API, so no backend is
+required.
+
+## Signing in
+
+Every page except `/sign-in` needs a signed-in user. There is no registration: an admin creates users.
+
+- **Mock API:** one test account per role (admin, test lead, tester, read-only) plus a deactivated one,
+  all with the same password — see `src/features/user/mock/user.mock.data.ts`. The mock session survives a
+  reload within the browser tab. A user invited in mock mode gets no email: the mock prints the
+  set-password link in the browser console instead.
+- **Real backend:** the first admin is created in tcms-api with `npm run admin:create` (password from its
+  `INITIAL_ADMIN_PASSWORD` env). That admin invites the other users from **Users**; each invitee gets an
+  email (Mailpit in development) with a `/set-password` link and chooses their own password.
 
 ## Environment
 
