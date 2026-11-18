@@ -1,0 +1,81 @@
+{
+    "page": {
+        "paginationTitle": "Test suites",
+        "createTitle": "Create test suite",
+        "updateTitle": "Update test suite",
+        "addTestSuite": "Add test suite"
+    },
+    "table": {
+        "nameColumn": "Name",
+        "descriptionColumn": "Description",
+        "testCaseCountColumn": "Test cases",
+        "actionColumn": "Action",
+        "empty": "No test suites yet",
+        "total_one": "{{count}} suite",
+        "total_other": "{{count}} suites"
+    },
+    "form": {
+        "nameLabel": "Name",
+        "descriptionLabel": "Description",
+        "submit": "Submit"
+    },
+    "validation": {
+        "nameRequired": "Name is required",
+        "nameMaxLength": "Name must be at most 150 characters",
+        "descriptionMaxLength": "Description must be at most 1000 characters",
+        "nameTaken": "A suite with this name already exists in this project"
+    },
+    "view": {
+        "descriptionLabel": "Description",
+        "testCaseCountLabel": "Test cases",
+        "createdAtLabel": "Created",
+        "updatedAtLabel": "Last updated",
+        "casesTitle": "Test cases ({{count}})",
+        "casesEmpty": "No test cases in this suite yet",
+        "orderColumn": "#",
+        "titleColumn": "Title",
+        "priorityColumn": "Priority",
+        "typeColumn": "Type",
+        "actionColumn": "Action"
+    },
+    "cases": {
+        "add": "Add test cases",
+        "moveUp": "Move {{title}} up",
+        "moveDown": "Move {{title}} down",
+        "remove": "Remove",
+        "removeLabel": "Remove {{title}} from this suite",
+        "removeTitle": "Remove from this suite?",
+        "removeDescription": "The test case itself stays.",
+        "removed": "Removed from the suite",
+        "removeError": "Couldn't remove the test case. Please try again.",
+        "reorderError": "Couldn't save the new order — the suite has been reloaded.",
+        "pickerTitle": "Add test cases to {{suite}}",
+        "pickerLabel": "Test cases",
+        "pickerPlaceholder": "Search test cases by title or description",
+        "pickerHelp": "They're added at the end, in the order you pick them. Up to 100 at a time.",
+        "pickerLoading": "Searching…",
+        "pickerNotFound": "No matching test cases",
+        "pickerMore": "Showing {{shown}} of {{total}} — type to narrow the list",
+        "inSuite": "already in this suite",
+        "pickerSubmit": "Add",
+        "added_one": "Added {{count}} test case",
+        "added_other": "Added {{count}} test cases",
+        "addStale": "A selected test case no longer exists. Nothing was added.",
+        "addError": "Couldn't add the test cases. Please try again."
+    },
+    "action": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteTitle": "Delete this suite?",
+        "deleteDescription": "Its test cases stay in the project.",
+        "cancel": "Cancel"
+    },
+    "notifications": {
+        "createSuccess": "Test suite created",
+        "updateSuccess": "Test suite updated",
+        "saveError": "Couldn't save the test suite. Please try again.",
+        "deleteSuccess": "Test suite deleted",
+        "deleteError": "Couldn't delete the test suite. Please try again.",
+        "notFoundAnymore": "This test suite no longer exists"
+    }
+}
