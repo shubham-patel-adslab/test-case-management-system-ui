@@ -5,7 +5,7 @@ import { useTheme } from '../../shared/theme';
 
 // One color per execution status in every chart (suite run report, dashboard), from antd's palette tokens —
 // a set per theme, because the dark algorithm inverts the palette (light red4 becomes a dark maroon).
-// Checked with the dataviz palette validator (2026-11-18):
+// Checked for color-blind separation (OKLab ΔE under simulated color vision deficiency) and contrast:
 // - light: dark green vs light red separates pass/fail for red-green color blindness too (ΔE 14), which
 //   antd's colorSuccess/colorError don't (4.9); blocked is antd's warning gold, ΔE ≥ 11 from every other
 //   status (the darker gold9 was 1.9 from passed); with the dark gray for skipped, every pair is ΔE ≥ 10.4

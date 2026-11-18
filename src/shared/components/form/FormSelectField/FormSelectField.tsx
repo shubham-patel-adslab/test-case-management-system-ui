@@ -18,6 +18,8 @@ type FormSelectFieldProps<TFieldValues extends FieldValues> = {
     disabled?: boolean;
     // Help text under the field (e.g. why it's disabled).
     extra?: string;
+    // Shown while nothing is selected.
+    placeholder?: string;
 };
 
 export function FormSelectField<TFieldValues extends FieldValues>({
@@ -30,6 +32,7 @@ export function FormSelectField<TFieldValues extends FieldValues>({
     required,
     disabled,
     extra,
+    placeholder,
 }: FormSelectFieldProps<TFieldValues>) {
     return (
         <Form.Item
@@ -43,7 +46,17 @@ export function FormSelectField<TFieldValues extends FieldValues>({
             <Controller
                 name={name}
                 control={control}
-                render={({ field }) => <Select id={name} options={options} disabled={disabled} {...field} />}
+                // An empty value means nothing selected: antd shows the placeholder only for undefined.
+                render={({ field }) => (
+                    <Select
+                        id={name}
+                        options={options}
+                        disabled={disabled}
+                        placeholder={placeholder}
+                        {...field}
+                        value={field.value === '' ? undefined : field.value}
+                    />
+                )}
             />
         </Form.Item>
     );

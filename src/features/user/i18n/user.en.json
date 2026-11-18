@@ -4,6 +4,7 @@
         "lastNameLabel": "Last name",
         "emailLabel": "Email",
         "roleLabel": "Role",
+        "rolePlaceholder": "Select a role",
         "ownRoleLocked": "You can't change your own role.",
         "submitInvite": "Send invitation",
         "submitUpdate": "Save"

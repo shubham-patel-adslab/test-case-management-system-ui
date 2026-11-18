@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { Form } from 'antd';
 
-import { DEFAULT_ROLE_CODE } from '../user.constant';
 import { userFormSchema } from '../user.schema';
 import type { RoleType, UserFormType } from '../user.type';
 import { FormTextField } from '../../../shared/components/form/FormTextField';
@@ -14,7 +13,8 @@ const CREATE_DEFAULT_VALUES: UserFormType = {
     firstName: '',
     lastName: '',
     email: '',
-    roleCode: DEFAULT_ROLE_CODE,
+    // No role preselected: the admin always chooses one (required, by the API too).
+    roleCode: '',
 };
 
 type UserFormProps = {
@@ -91,6 +91,7 @@ export function UserForm({
                     options={roleOptions}
                     error={errors.roleCode}
                     t={t}
+                    placeholder={t('form.rolePlaceholder')}
                     required
                     disabled={isRoleLocked}
                     extra={isRoleLocked ? t('form.ownRoleLocked') : undefined}

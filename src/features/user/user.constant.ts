@@ -12,9 +12,6 @@ export const USER_NAME_MAX_LENGTH = 100;
 // The longest address SMTP allows (RFC 5321) — same limit as the backend.
 export const USER_EMAIL_MAX_LENGTH = 254;
 
-// New users start as testers (PRD: the default role).
-export const DEFAULT_ROLE_CODE = 'TESTER';
-
 // GET /users `sort` fields (name = "first last"); name A→Z by default, like the API (ui-requirements §6.1
 // "List order").
 export const USER_SORT_FIELDS = ['name', 'email', 'createdAt'] as const;
