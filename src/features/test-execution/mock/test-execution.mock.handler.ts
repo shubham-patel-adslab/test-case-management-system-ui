@@ -7,7 +7,7 @@ import {
     nextMockExecutionId,
     type MockExecution,
 } from './test-execution.mock.data';
-import { EXECUTION_PENDING } from '../test-execution.constant';
+import { EXECUTION_PENDING, TEST_EXECUTION_DEFAULT_SORT, TEST_EXECUTION_SORT_FIELDS } from '../test-execution.constant';
 import type {
     TestExecutionAssignRequestDto,
     TestExecutionCreateRequestDto,
@@ -20,6 +20,7 @@ import type {
     TestExecutionProgressResponseDto,
     TestExecutionSummaryResponseDto,
 } from '../test-execution.response.dto';
+import type { TestExecutionSortField } from '../test-execution.type';
 import { getMockSessionUser, mockErrorResponse, mockHasPermission, withMockPermission } from '../../auth/mock/auth.mock.handler';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../../auth/auth.constant';
 import { findMockAttachmentsOfExecution, toAttachmentResponse } from '../../attachment/mock/attachment.mock.data';
@@ -30,7 +31,7 @@ import type { MockTestCase } from '../../test-case/mock/test-case.mock.data';
 import { findMockTestCase } from '../../test-case/mock/test-case.mock.handler';
 import { userMock } from '../../user/mock/user.mock.data';
 import type { UserReferenceResponseDto } from '../../user/user.response.dto';
-import { getMockPaging, mockValidationError, toMockPage } from '../../../shared/mock/page.mock';
+import { compareMockText, getMockPaging, getMockSort, mockValidationError, toMockPage } from '../../../shared/mock/page.mock';
 
 const EXECUTIONS_URL = `${import.meta.env.VITE_TCMS_API_URL}/projects/:projectId/test-executions`;
 
@@ -157,8 +158,26 @@ function record(execution: MockExecution, testCase: MockTestCase, body: TestExec
     addMockAuditLog(execution.id, 'RESULT_RECORDED', actorId, { status: body.status }, now);
 }
 
+// The backend's order: case-insensitive title; pending (no executedAt) last in both directions; ties by id in
+// the same direction.
+function compareExecutions(field: TestExecutionSortField, direction: number) {
+    return (a: MockExecution, b: MockExecution): number => {
+        if (field === 'executedAt' && (a.executedAt === null) !== (b.executedAt === null)) {
+            return a.executedAt === null ? 1 : -1;
+        }
+
+        const byField: Record<TestExecutionSortField, number> = {
+            testCaseTitle: compareMockText(a.testCaseTitle, b.testCaseTitle),
+            createdAt: a.createdAt.localeCompare(b.createdAt),
+            executedAt: (a.executedAt ?? '').localeCompare(b.executedAt ?? ''),
+        };
+
+        return direction * (byField[field] || a.id - b.id);
+    };
+}
+
 export const testExecutionMockHandler = [
-    // Queue and history, newest first.
+    // Queue and history: test case title A→Z unless `sort` says otherwise, like the backend.
     http.get(EXECUTIONS_URL, withMockPermission(RESOURCE_CODE.TEST_EXECUTION, PERMISSION_CODE.READ, ({ params, request }) => {
         const projectId = Number(params.projectId);
 
@@ -171,6 +190,11 @@ export const testExecutionMockHandler = [
         const assigneeId = url.searchParams.get('assigneeId');
         const testCaseId = Number(url.searchParams.get('testCaseId')) || undefined;
         const suiteRunId = Number(url.searchParams.get('suiteRunId')) || undefined;
+        const { sort, error } = getMockSort(url, TEST_EXECUTION_SORT_FIELDS, TEST_EXECUTION_DEFAULT_SORT);
+
+        if (error) {
+            return error;
+        }
 
         const executions = executionMock
             .filter((execution) => execution.projectId === projectId)
@@ -178,7 +202,7 @@ export const testExecutionMockHandler = [
             .filter((execution) => !assigneeId || execution.assigneeId === assigneeId)
             .filter((execution) => testCaseId === undefined || execution.testCaseId === testCaseId)
             .filter((execution) => suiteRunId === undefined || execution.suiteRunId === suiteRunId)
-            .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id);
+            .sort(compareExecutions(sort.field, sort.direction === 'asc' ? 1 : -1));
 
         const executionPage = toMockPage(executions, page, pageSize);
         const response: TestExecutionPageResponseDto = { ...executionPage, items: executionPage.items.map(toMockExecutionSummary) };

@@ -43,8 +43,8 @@ export function TestSuiteCasePicker({ projectId, suite, onClose }: TestSuiteCase
     const request: TestCasePageRequestDto = {
         page: 1,
         pageSize: TEST_SUITE_CASE_PICKER_PAGE_SIZE,
+        // Title A→Z: the API's default order.
         search: debouncedSearch || undefined,
-        sort: 'title:asc',
     };
 
     const candidatesQuery = useQuery({

@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { Button, Flex, Input, Select, Table, type TableColumnsType } from 'antd';
+import { Button, Flex, Input, Select, Table, type TableColumnsType, type TableProps } from 'antd';
 
 import { UserStatusTag } from '../components/UserStatusTag';
 import { getUsers } from '../user.api';
-import { USER_STATUSES } from '../user.constant';
+import { USER_DEFAULT_SORT, USER_SORT_FIELDS, USER_STATUSES } from '../user.constant';
 import { toUserPage } from '../user.mapper';
 import type { UserDetailsType, UserStatus } from '../user.type';
 import { useAuth } from '../../auth/auth.context';
@@ -14,6 +14,8 @@ import { PageHeader } from '../../../shared/components/PageHeader';
 import { QueryErrorState } from '../../../shared/components/QueryErrorState';
 import { QueryLoadingState } from '../../../shared/components/QueryLoadingState';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../../../shared/constant/page.constant';
+import { SORT_PARAM } from '../../../shared/constant/sort.constant';
+import { fromTableSorter, parseListSort, setListSortParam, toColumnSortOrder, toSortParam } from '../../../shared/list/list-sort';
 import { formatDate } from '../../../shared/format/date.format';
 import { formatFullName } from '../../../shared/format/name.format';
 import styles from './UserPaginationPage.module.scss';
@@ -35,8 +37,10 @@ export function UserPaginationPage() {
     const statusParam = searchParams.get('status');
     // An unknown status in a hand-edited URL is ignored rather than sent (the API would answer 400).
     const status = isUserStatus(statusParam) ? statusParam : undefined;
+    // Server-side order, in the URL; name A→Z (the API default) unless the user picks another.
+    const sort = parseListSort(searchParams.get(SORT_PARAM), USER_SORT_FIELDS, USER_DEFAULT_SORT);
 
-    const request = { page, pageSize, search: search || undefined, status };
+    const request = { page, pageSize, search: search || undefined, status, sort: toSortParam(sort, USER_DEFAULT_SORT) };
 
     const userQuery = useQuery({
         queryKey: ['users', 'list', request],
@@ -57,6 +61,12 @@ export function UserPaginationPage() {
         });
     };
 
+    const handleTableChange: TableProps<UserDetailsType>['onChange'] = (_pagination, _filters, sorter, extra) => {
+        if (extra.action === 'sort') {
+            setSearchParams((prev) => setListSortParam(prev, fromTableSorter(sorter, USER_SORT_FIELDS, USER_DEFAULT_SORT), USER_DEFAULT_SORT));
+        }
+    };
+
     if (userQuery.isError) {
         return <QueryErrorState onRetry={() => void userQuery.refetch()} />;
     }
@@ -72,12 +82,16 @@ export function UserPaginationPage() {
         {
             title: t('table.nameColumn'),
             key: 'name',
+            sorter: true,
+            sortOrder: toColumnSortOrder(sort, 'name'),
             render: (_, user) => <Link to={`/users/${user.id}`}>{formatFullName(user.firstName, user.lastName)}</Link>,
         },
         {
             title: t('table.emailColumn'),
             dataIndex: 'email',
             key: 'email',
+            sorter: true,
+            sortOrder: toColumnSortOrder(sort, 'email'),
         },
         {
             title: t('table.roleColumn'),
@@ -92,6 +106,8 @@ export function UserPaginationPage() {
         {
             title: t('table.createdColumn'),
             key: 'createdAt',
+            sorter: true,
+            sortOrder: toColumnSortOrder(sort, 'createdAt'),
             render: (_, user) => formatDate(user.createdAt),
         },
         {
@@ -152,6 +168,7 @@ export function UserPaginationPage() {
                 dataSource={userPage.items}
                 loading={userQuery.isFetching}
                 scroll={{ x: 'max-content' }}
+                onChange={handleTableChange}
                 pagination={{
                     current: userPage.page,
                     pageSize: userPage.pageSize,

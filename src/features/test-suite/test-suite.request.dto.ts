@@ -1,6 +1,11 @@
 import type { PageRequestDto } from '../../shared/request/page.request.dto';
+import type { SortParam } from '../../shared/request/sort.request.dto';
+import type { TestSuiteSortField } from './test-suite.type';
 
-export type TestSuitePageRequestDto = PageRequestDto;
+// Without `sort` the API orders by name A→Z.
+export type TestSuitePageRequestDto = PageRequestDto & {
+    sort?: SortParam<TestSuiteSortField>;
+};
 
 // OpenAPI TestSuiteCreateRequest.
 export type TestSuiteCreateRequestDto = {

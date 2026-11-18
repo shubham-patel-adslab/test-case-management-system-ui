@@ -1,6 +1,6 @@
 import {
     EXECUTION_RESULTS,
-    SORT_DIRECTIONS,
+    TEST_CASE_DEFAULT_SORT,
     TEST_CASE_SEARCH_MAX_LENGTH,
     TEST_CASE_PRIORITIES,
     TEST_CASE_SORT_FIELDS,
@@ -9,6 +9,8 @@ import {
 import type { TestCasePageRequestDto } from './test-case.request.dto';
 import type { TestCaseListParamsType } from './test-case.type';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../../shared/constant/page.constant';
+import { SORT_PARAM } from '../../shared/constant/sort.constant';
+import { parseListSort, toSortParam } from '../../shared/list/list-sort';
 
 // The list's state lives in the URL (ui-requirements §4.3: shareable, survives refresh, back button works).
 // The URL uses the API's own parameter names and comma-separated lists.
@@ -21,7 +23,7 @@ export const TEST_CASE_LIST_PARAM = {
     TAGS: 'tags',
     SUITE_ID: 'suiteId',
     LAST_RESULT: 'lastResult',
-    SORT: 'sort',
+    SORT: SORT_PARAM,
 } as const;
 
 function splitList(value: string | null): string[] {
@@ -39,14 +41,6 @@ function toPositiveInteger(value: string | null): number | undefined {
     return value && Number.isInteger(number) && number > 0 ? number : undefined;
 }
 
-function parseSort(value: string | null): TestCaseListParamsType['sort'] {
-    const [field, direction] = (value ?? '').split(':');
-    const knownField = TEST_CASE_SORT_FIELDS.find((option) => option === field);
-    const knownDirection = SORT_DIRECTIONS.find((option) => option === direction);
-
-    return knownField && knownDirection ? { field: knownField, direction: knownDirection } : undefined;
-}
-
 export function parseTestCaseListParams(searchParams: URLSearchParams): TestCaseListParamsType {
     return {
         page: toPositiveInteger(searchParams.get(TEST_CASE_LIST_PARAM.PAGE)) ?? DEFAULT_PAGE,
@@ -57,13 +51,14 @@ export function parseTestCaseListParams(searchParams: URLSearchParams): TestCase
         tags: splitList(searchParams.get(TEST_CASE_LIST_PARAM.TAGS)).map((tag) => tag.toLowerCase()),
         suiteId: toPositiveInteger(searchParams.get(TEST_CASE_LIST_PARAM.SUITE_ID)),
         lastResults: pickKnown(searchParams.get(TEST_CASE_LIST_PARAM.LAST_RESULT), EXECUTION_RESULTS),
-        sort: parseSort(searchParams.get(TEST_CASE_LIST_PARAM.SORT)),
+        // Title A→Z (the API default) unless the URL says otherwise.
+        sort: parseListSort(searchParams.get(TEST_CASE_LIST_PARAM.SORT), TEST_CASE_SORT_FIELDS, TEST_CASE_DEFAULT_SORT),
     };
 }
 
 const joinList = (values: string[]) => (values.length > 0 ? values.join(',') : undefined);
 
-// Empty filters are left out of the request (and so out of the query key).
+// Empty filters — and the default sort — are left out of the request (and so out of the query key).
 export function toTestCasePageRequestDto(params: TestCaseListParamsType): TestCasePageRequestDto {
     return {
         page: params.page,
@@ -74,7 +69,7 @@ export function toTestCasePageRequestDto(params: TestCaseListParamsType): TestCa
         tags: joinList(params.tags),
         suiteId: params.suiteId,
         lastResult: joinList(params.lastResults),
-        sort: params.sort && `${params.sort.field}:${params.sort.direction}`,
+        sort: toSortParam(params.sort, TEST_CASE_DEFAULT_SORT),
     };
 }
 
@@ -97,7 +92,7 @@ export function applyTestCaseListParamChanges(searchParams: URLSearchParams, cha
     if ('tags' in changes) set(TEST_CASE_LIST_PARAM.TAGS, joinList(changes.tags ?? []));
     if ('suiteId' in changes) set(TEST_CASE_LIST_PARAM.SUITE_ID, changes.suiteId?.toString());
     if ('lastResults' in changes) set(TEST_CASE_LIST_PARAM.LAST_RESULT, joinList(changes.lastResults ?? []));
-    if ('sort' in changes) set(TEST_CASE_LIST_PARAM.SORT, changes.sort && `${changes.sort.field}:${changes.sort.direction}`);
+    if (changes.sort) set(TEST_CASE_LIST_PARAM.SORT, toSortParam(changes.sort, TEST_CASE_DEFAULT_SORT));
 
     searchParams.set(TEST_CASE_LIST_PARAM.PAGE, String(DEFAULT_PAGE));
 

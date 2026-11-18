@@ -1,9 +1,17 @@
 .tb-app-header {
     display: flex;
     align-items: center;
+    gap: 12px;
     padding-inline: 24px;
 }
 
+.tb-app-header__start {
+    display: flex;
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
 .tb-app-header__extra {
+    flex-shrink: 0;
     margin-inline-start: auto;
 }

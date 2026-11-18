@@ -1,6 +1,7 @@
 import type { PageRequestDto } from '../../shared/request/page.request.dto';
+import type { SortParam } from '../../shared/request/sort.request.dto';
 import type { TEST_CASE_BULK_ACTION } from './test-case.constant';
-import type { TestCasePriority, TestType } from './test-case.type';
+import type { TestCasePriority, TestCaseSortField, TestType } from './test-case.type';
 
 // OpenAPI TestCaseCreateRequest — every field required; the steps' array order is their order.
 export type TestCaseCreateRequestDto = {
@@ -21,7 +22,7 @@ export type TestCaseUpdateRequestDto = TestCaseCreateRequestDto & {
 };
 
 // GET /projects/:projectId/test-cases. Multi-value filters are comma-separated (any of);
-// sort is `<field>:<asc|desc>`.
+// without `sort` the API orders by title A→Z.
 export type TestCasePageRequestDto = PageRequestDto & {
     search?: string;
     priority?: string;
@@ -29,7 +30,7 @@ export type TestCasePageRequestDto = PageRequestDto & {
     tags?: string;
     suiteId?: number;
     lastResult?: string;
-    sort?: string;
+    sort?: SortParam<TestCaseSortField>;
 };
 
 // OpenAPI TestCaseBulkRequest — discriminated by `action`; 1–100 ids without duplicates. All-or-nothing:

@@ -4,18 +4,17 @@ import type { FieldPath } from 'react-hook-form';
 import type { testCaseFormSchema } from './test-case.schema';
 import type {
     EXECUTION_RESULTS,
-    SORT_DIRECTIONS,
     TEST_CASE_PRIORITIES,
     TEST_CASE_SORT_FIELDS,
     TEST_TYPES,
 } from './test-case.constant';
 import type { PageType } from '../../shared/type/page.type';
+import type { ListSort } from '../../shared/type/sort.type';
 
 export type TestCasePriority = (typeof TEST_CASE_PRIORITIES)[number];
 export type TestType = (typeof TEST_TYPES)[number];
 export type ExecutionResult = (typeof EXECUTION_RESULTS)[number];
 export type TestCaseSortField = (typeof TEST_CASE_SORT_FIELDS)[number];
-export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 
 export type TestCaseFormType = z.infer<typeof testCaseFormSchema>;
 
@@ -66,5 +65,5 @@ export type TestCaseListParamsType = {
     tags: string[];
     suiteId: number | undefined;
     lastResults: ExecutionResult[];
-    sort: { field: TestCaseSortField; direction: SortDirection } | undefined;
+    sort: ListSort<TestCaseSortField>;
 };

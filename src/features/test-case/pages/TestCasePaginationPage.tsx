@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Button, Table, type TableColumnsType, type TableProps } from 'antd';
-import type { SortOrder } from 'antd/es/table/interface';
 
 import { ExecutionResultTag } from '../components/ExecutionResultTag';
 import { TestCaseBulkActions } from '../components/TestCaseBulkActions';
@@ -12,6 +11,7 @@ import { TestCasePriorityTag } from '../components/TestCasePriorityTag';
 import { TestCaseTagList } from '../components/TestCaseTagList';
 import { getTestCases } from '../test-case.api';
 import {
+    TEST_CASE_DEFAULT_SORT,
     TEST_CASE_SORT_FIELDS,
     TEST_CASE_TABLE_WIDTH,
     TEST_CASE_VIRTUAL_BODY_HEIGHT,
@@ -36,14 +36,11 @@ import { QueryErrorState } from '../../../shared/components/QueryErrorState';
 import { QueryLoadingState } from '../../../shared/components/QueryLoadingState';
 import { PAGE_SIZE_OPTIONS } from '../../../shared/constant/page.constant';
 import { formatDateTime } from '../../../shared/format/date.format';
+import { fromTableSorter, toColumnSortOrder } from '../../../shared/list/list-sort';
 
 const MAX_TAGS_IN_ROW = 3;
 
 type TestCaseRow = TestCaseSummaryType & { suiteNames: string[] };
-
-function isSortField(value: unknown): value is TestCaseSortField {
-    return TEST_CASE_SORT_FIELDS.some((field) => field === value);
-}
 
 export function TestCasePaginationPage() {
     const { t } = useTranslation('testCase');
@@ -96,16 +93,11 @@ export function TestCasePaginationPage() {
     };
 
     const handleTableChange: TableProps<TestCaseRow>['onChange'] = (_pagination, _filters, sorter, extra) => {
-        if (extra.action !== 'sort' || Array.isArray(sorter)) {
-            return;
+        if (extra.action === 'sort') {
+            const sort = fromTableSorter(sorter, TEST_CASE_SORT_FIELDS, TEST_CASE_DEFAULT_SORT);
+
+            setSearchParams((prev) => applyTestCaseListParamChanges(prev, { sort }));
         }
-
-        const field = sorter.columnKey;
-        const sort = isSortField(field) && sorter.order
-            ? { field, direction: sorter.order === 'ascend' ? 'asc' as const : 'desc' as const }
-            : undefined;
-
-        setSearchParams((prev) => applyTestCaseListParamChanges(prev, { sort }));
     };
 
     if (testCaseQuery.isError) {
@@ -123,14 +115,8 @@ export function TestCasePaginationPage() {
     const canSelect = canUpdate || can(RESOURCE_CODE.TEST_ASSIGNMENT, PERMISSION_CODE.CREATE);
     const testCasesPath = `/projects/${project.id}/test-cases`;
 
-    // Controlled sort: the column shows the URL's sort.
-    const sortOrderOf = (field: TestCaseSortField): SortOrder => {
-        if (params.sort?.field !== field) {
-            return null;
-        }
-
-        return params.sort.direction === 'asc' ? 'ascend' : 'descend';
-    };
+    // Controlled sort: the column shows the URL's sort (title A→Z when it has none).
+    const sortOrderOf = (field: TestCaseSortField) => toColumnSortOrder(params.sort, field);
 
     const columns: TableColumnsType<TestCaseRow> = [
         {

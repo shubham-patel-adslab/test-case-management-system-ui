@@ -26,3 +26,11 @@ export type RoleResponseDto = {
     name: string;
     description: string;
 };
+
+// OpenAPI UserReferenceResponse — who did something (executions, suite runs, defects, attachments, audit).
+// Enough to show a name; non-admins can't read /users, so references carry it themselves.
+export type UserReferenceResponseDto = {
+    id: string;
+    firstName: string;
+    lastName: string | null;
+};

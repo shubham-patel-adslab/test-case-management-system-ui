@@ -9,6 +9,7 @@ import { toRole, toUserCreateRequestDto, toUserDetails, toUserFormValues, toUser
 import type { UserFormType } from '../user.type';
 import { useAuth } from '../../auth/auth.context';
 import { API_ERROR_CODE, getApiErrorCode } from '../../../app/api-error';
+import { FORM_EXIT_NAVIGATION } from '../../../shared/components/form/FormActions';
 import { PageHeader } from '../../../shared/components/PageHeader';
 import { QueryErrorState } from '../../../shared/components/QueryErrorState';
 import { QueryLoadingState } from '../../../shared/components/QueryLoadingState';
@@ -50,7 +51,7 @@ export function UserFormPage() {
                 ? t('notifications.updateSuccess')
                 : t('notifications.inviteSuccess', { email: user.email }));
 
-            void navigate(`/users/${user.id}`);
+            void navigate(`/users/${user.id}`, FORM_EXIT_NAVIGATION);
         } catch (error) {
             const code = getApiErrorCode(error);
 
@@ -65,7 +66,7 @@ export function UserFormPage() {
                 // so go back to the list.
                 await queryClient.invalidateQueries({ queryKey: ['users'] });
                 message.warning(isUpdateMode ? t('notifications.updatedEmailFailed') : t('notifications.createdEmailFailed'));
-                void navigate(isUpdateMode ? `/users/${userId}` : '/users');
+                void navigate(isUpdateMode ? `/users/${userId}` : '/users', FORM_EXIT_NAVIGATION);
                 return;
             }
 
@@ -106,7 +107,7 @@ export function UserFormPage() {
                 isRoleLocked={isUpdateMode && session?.user.id === userId}
                 onSubmit={handleSubmit}
                 // Back to where the user came from: the user for an update, the list for an invite.
-                onCancel={() => void navigate(isUpdateMode ? `/users/${userId}` : '/users')}
+                onCancel={() => void navigate(isUpdateMode ? `/users/${userId}` : '/users', FORM_EXIT_NAVIGATION)}
                 isSubmitting={isSubmitting}
             />
         </>

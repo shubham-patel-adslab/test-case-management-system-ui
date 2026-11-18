@@ -1,4 +1,5 @@
 import { formatFullName } from '../../../shared/format/name.format';
+import { compareMockText } from '../../../shared/mock/page.mock';
 import type { RoleResponseDto, UserDetailsResponseDto } from '../user.response.dto';
 
 // Mock-only test accounts (MSW, development). The five named accounts sign in with this password; on the
@@ -93,6 +94,11 @@ export function toUserDetailsResponse(user: MockUser): UserDetailsResponseDto {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
     };
+}
+
+// The backend's user name order: lower("first last"), A→Z.
+export function compareMockUserNames(a: MockUser, b: MockUser): number {
+    return compareMockText(formatFullName(a.firstName, a.lastName), formatFullName(b.firstName, b.lastName));
 }
 
 // Same matching as the backend's user search: first, last, "first last" and email, case-insensitive.

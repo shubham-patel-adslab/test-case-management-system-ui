@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
 import type { projectFormSchema } from './project.schema';
-import type { PROJECT_STATUSES } from './project.constant';
+import type { PROJECT_SORT_FIELDS, PROJECT_STATUSES } from './project.constant';
 import type { PageType } from '../../shared/type/page.type';
 import type { UserStatus } from '../user/user.type';
 
 export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
+export type ProjectSortField = (typeof PROJECT_SORT_FIELDS)[number];
 
 export type ProjectFormType = z.infer<typeof projectFormSchema>;
 

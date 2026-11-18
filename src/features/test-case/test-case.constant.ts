@@ -1,3 +1,6 @@
+import type { TestCaseSortField } from './test-case.type';
+import type { ListSort } from '../../shared/type/sort.type';
+
 // UPPER_SNAKE_CASE on the wire, as the backend stores them (no mapping layer). Priority order is rank order.
 export const TEST_CASE_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const;
 export const TEST_TYPES = ['FUNCTIONAL', 'INTEGRATION', 'REGRESSION', 'SMOKE', 'UI', 'API'] as const;
@@ -22,10 +25,10 @@ export const TEST_CASE_BULK_ACTION = {
 } as const;
 export const TEST_CASE_BULK_MAX = 100;
 
-// List sorting: `sort=<field>:<direction>`. The table sorts by these; the default is newest first.
-export const TEST_CASE_SORT_FIELDS = ['title', 'priority', 'type', 'lastExecutedAt'] as const;
-export const SORT_DIRECTIONS = ['asc', 'desc'] as const;
-export const TEST_CASE_DEFAULT_SORT = 'createdAt:desc';
+// GET …/test-cases `sort` fields; title A→Z by default, like the API (ui-requirements §6.1 "List order").
+// The table has columns for title, priority, type and last executed.
+export const TEST_CASE_SORT_FIELDS = ['title', 'priority', 'type', 'createdAt', 'updatedAt', 'lastExecutedAt'] as const;
+export const TEST_CASE_DEFAULT_SORT: ListSort<TestCaseSortField> = { field: 'title', direction: 'asc' };
 
 export const TEST_CASE_SEARCH_DEBOUNCE_MS = 300;
 

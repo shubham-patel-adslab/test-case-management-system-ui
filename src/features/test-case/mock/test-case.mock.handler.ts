@@ -1,7 +1,8 @@
 import { http, HttpResponse } from 'msw';
 
 import { nextMockStepId, testCaseMock, type MockTestCase } from './test-case.mock.data';
-import { TEST_CASE_BULK_ACTION, TEST_CASE_DEFAULT_SORT, TEST_CASE_PRIORITIES } from '../test-case.constant';
+import { TEST_CASE_BULK_ACTION, TEST_CASE_DEFAULT_SORT, TEST_CASE_PRIORITIES, TEST_CASE_SORT_FIELDS } from '../test-case.constant';
+import type { TestCaseSortField } from '../test-case.type';
 import type { TestCaseBulkRequestDto, TestCaseCreateRequestDto, TestCaseUpdateRequestDto } from '../test-case.request.dto';
 import type { TestCaseDetailsResponseDto, TestCasePageResponseDto, TestCaseSummaryResponseDto } from '../test-case.response.dto';
 import { getMockSessionUser, mockErrorResponse, mockHasPermission, withMockPermission } from '../../auth/mock/auth.mock.handler';
@@ -13,7 +14,7 @@ import {
     testSuiteMock,
 } from '../../test-suite/mock/test-suite.mock.data';
 import { detachMockExecutionsOfTestCase } from '../../test-execution/mock/test-execution.mock.data';
-import { getMockPaging, mockValidationError, toMockPage } from '../../../shared/mock/page.mock';
+import { compareMockText, getMockPaging, getMockSort, mockValidationError, toMockPage } from '../../../shared/mock/page.mock';
 
 const TEST_CASES_URL = `${import.meta.env.VITE_TCMS_API_URL}/projects/:projectId/test-cases`;
 
@@ -53,7 +54,9 @@ const listParam = (url: URL, name: string) => url.searchParams.get(name)?.split(
 
 // Same order rules as the backend: priority by rank, title case-insensitive, never-executed last in both
 // directions, id as the tie-breaker in the same direction.
-function compareTestCases(field: string, direction: number) {
+// The backend's order: case-insensitive title, priority by rank, never-executed last in both directions; ties
+// by id in the same direction.
+function compareTestCases(field: TestCaseSortField, direction: number) {
     const rank = (testCase: MockTestCase) => TEST_CASE_PRIORITIES.indexOf(testCase.priority);
 
     return (a: MockTestCase, b: MockTestCase): number => {
@@ -61,8 +64,8 @@ function compareTestCases(field: string, direction: number) {
             return a.lastExecutedAt === null ? 1 : -1;
         }
 
-        const byField: Record<string, number> = {
-            title: a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
+        const byField: Record<TestCaseSortField, number> = {
+            title: compareMockText(a.title, b.title),
             priority: rank(a) - rank(b),
             type: a.type.localeCompare(b.type),
             createdAt: a.createdAt.localeCompare(b.createdAt),
@@ -70,7 +73,7 @@ function compareTestCases(field: string, direction: number) {
             lastExecutedAt: (a.lastExecutedAt ?? '').localeCompare(b.lastExecutedAt ?? ''),
         };
 
-        return direction * ((byField[field] ?? 0) || a.id - b.id);
+        return direction * (byField[field] || a.id - b.id);
     };
 }
 
@@ -127,7 +130,12 @@ export const testCaseMockHandler = [
         const tags = listParam(url, 'tags').map((tag) => tag.toLowerCase());
         const suiteId = Number(url.searchParams.get('suiteId')) || undefined;
         const lastResults = listParam(url, 'lastResult');
-        const [sortField, sortDirection] = (url.searchParams.get('sort') ?? TEST_CASE_DEFAULT_SORT).split(':');
+        const { sort, error } = getMockSort(url, TEST_CASE_SORT_FIELDS, TEST_CASE_DEFAULT_SORT);
+
+        if (error) {
+            return error;
+        }
+
         const suiteCaseIds = suiteId === undefined ? undefined : testSuiteMock.find((suite) => suite.id === suiteId)?.testCaseIds ?? [];
 
         const testCases = testCaseMock
@@ -140,7 +148,7 @@ export const testCaseMockHandler = [
             .filter((testCase) => tags.length === 0 || testCase.tags.some((tag) => tags.includes(tag)))
             .filter((testCase) => suiteCaseIds === undefined || suiteCaseIds.includes(testCase.id))
             .filter((testCase) => lastResults.length === 0 || (testCase.lastResult !== null && lastResults.includes(testCase.lastResult)))
-            .sort(compareTestCases(sortField, sortDirection === 'asc' ? 1 : -1));
+            .sort(compareTestCases(sort.field, sort.direction === 'asc' ? 1 : -1));
 
         // Page first: summaries look up suite membership, only needed for the rows returned.
         const casePage = toMockPage(testCases, page, pageSize);

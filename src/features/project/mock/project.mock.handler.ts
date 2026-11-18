@@ -4,11 +4,18 @@ import { projectMock, toProjectDetailsResponse, toProjectMemberResponse, type Mo
 import { getMockSessionUser, mockHasPermission, withMockPermission } from '../../auth/mock/auth.mock.handler';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../../auth/auth.constant';
 import type { PermissionCode } from '../../auth/auth.type';
-import { mockUserMatchesSearch, userMock } from '../../user/mock/user.mock.data';
+import { compareMockUserNames, mockUserMatchesSearch, userMock } from '../../user/mock/user.mock.data';
+import { PROJECT_DEFAULT_SORT, PROJECT_SORT_FIELDS } from '../project.constant';
 import type { ProjectCreateRequestDto, ProjectUpdateRequestDto } from '../project.request.dto';
 import type { ProjectMemberCandidatePageResponseDto, ProjectPageResponseDto } from '../project.response.dto';
-import type { ErrorDetailDto } from '../../../shared/response/error.response.dto';
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../../../shared/constant/page.constant';
+import {
+    compareMockText,
+    getMockPaging,
+    getMockSort,
+    mockValidationError,
+    toMockPage,
+    toMockSortComparator,
+} from '../../../shared/mock/page.mock';
 
 const PROJECTS_URL = `${import.meta.env.VITE_TCMS_API_URL}/projects`;
 
@@ -19,35 +26,6 @@ const MEMBER_CANDIDATE_STATUSES = ['ACTIVE', 'INVITED'];
 // can't probe which ids exist.
 function projectNotFound() {
     return HttpResponse.json({ error: { code: 'NOT_FOUND', message: 'Project not found' } }, { status: 404 });
-}
-
-function validationError(details: ErrorDetailDto[]) {
-    return HttpResponse.json(
-        { error: { code: 'VALIDATION_ERROR', message: 'Request validation failed', details } },
-        { status: 400 },
-    );
-}
-
-function getPaging(request: Request) {
-    const url = new URL(request.url);
-
-    return {
-        url,
-        page: Number(url.searchParams.get('page')) || DEFAULT_PAGE,
-        pageSize: Number(url.searchParams.get('pageSize')) || DEFAULT_PAGE_SIZE,
-    };
-}
-
-function toPage<TItem>(items: TItem[], page: number, pageSize: number) {
-    const startIndex = (page - 1) * pageSize;
-
-    return {
-        items: items.slice(startIndex, startIndex + pageSize),
-        page,
-        pageSize,
-        totalItems: items.length,
-        totalPages: Math.ceil(items.length / pageSize),
-    };
 }
 
 // The backend's membership scope: an ALL_PROJECTS grant reaches every project, everyone else only their own.
@@ -62,11 +40,20 @@ function isInScope(project: MockProject, scope: string | null): boolean {
     return scope === null || project.memberIds.includes(scope);
 }
 
+// For the mocks of everything inside a project (test cases, suites, executions): the project when the
+// signed-in user reaches it with this permission's scope — READ for reads, UPDATE for changes, like the
+// backend's assertReadable / assertWritable — else undefined (answer 404).
+export function findMockProjectInScope(projectId: number, permission: PermissionCode): MockProject | undefined {
+    const project = projectMock.find((project) => project.id === projectId);
+
+    return project && isInScope(project, getScope(permission)) ? project : undefined;
+}
+
 // Like the backend's setMembers: duplicates and unknown or newly added inactive users are a 400 on the
 // exact memberIds[i]; a scoped caller is always kept on the team.
 function resolveTeam(memberIds: string[], currentMemberIds: string[], scope: string | null) {
     if (new Set(memberIds).size !== memberIds.length) {
-        return { error: validationError([{ field: 'memberIds', message: 'Must not contain duplicates' }]) };
+        return { error: mockValidationError([{ field: 'memberIds', message: 'Must not contain duplicates' }]) };
     }
 
     const details = memberIds.flatMap((userId, index) => {
@@ -77,40 +64,50 @@ function resolveTeam(memberIds: string[], currentMemberIds: string[], scope: str
     });
 
     if (details.length > 0) {
-        return { error: validationError(details) };
+        return { error: mockValidationError(details) };
     }
 
     return { team: scope === null || memberIds.includes(scope) ? memberIds : [...memberIds, scope] };
 }
 
 export const projectMockHandler = [
-    // Newest first, like the backend.
+    // Name A→Z (case-insensitive) unless `sort` says otherwise, like the backend.
     http.get(PROJECTS_URL, withMockPermission(RESOURCE_CODE.PROJECT, PERMISSION_CODE.READ, ({ request }) => {
-        const { page, pageSize } = getPaging(request);
-        const scope = getScope(PERMISSION_CODE.READ);
+        const { url, page, pageSize } = getMockPaging(request);
+        const { sort, error } = getMockSort(url, PROJECT_SORT_FIELDS, PROJECT_DEFAULT_SORT);
 
+        if (error) {
+            return error;
+        }
+
+        const scope = getScope(PERMISSION_CODE.READ);
         const projects = projectMock
             .filter((project) => isInScope(project, scope))
-            .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id)
+            .sort(toMockSortComparator<MockProject, typeof sort.field>(sort, {
+                name: (a, b) => compareMockText(a.name, b.name),
+                createdAt: (a, b) => a.createdAt.localeCompare(b.createdAt),
+                updatedAt: (a, b) => a.updatedAt.localeCompare(b.updatedAt),
+            }))
             .map(toProjectDetailsResponse);
 
-        const response: ProjectPageResponseDto = toPage(projects, page, pageSize);
+        const response: ProjectPageResponseDto = toMockPage(projects, page, pageSize);
 
         return HttpResponse.json(response);
     })),
 
     // Before '/:projectId', which would otherwise match it. Not scoped to a project: the create form uses it.
+    // Always by name (no `sort`), like the backend.
     http.get(`${PROJECTS_URL}/member-candidates`, withMockPermission(RESOURCE_CODE.PROJECT, PERMISSION_CODE.UPDATE, ({ request }) => {
-        const { url, page, pageSize } = getPaging(request);
+        const { url, page, pageSize } = getMockPaging(request);
         const search = url.searchParams.get('search') ?? '';
 
         const candidates = userMock
             .filter((user) => MEMBER_CANDIDATE_STATUSES.includes(user.status))
             .filter((user) => mockUserMatchesSearch(user, search))
-            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+            .sort((a, b) => compareMockUserNames(a, b) || a.id.localeCompare(b.id))
             .map(toProjectMemberResponse);
 
-        const response: ProjectMemberCandidatePageResponseDto = toPage(candidates, page, pageSize);
+        const response: ProjectMemberCandidatePageResponseDto = toMockPage(candidates, page, pageSize);
 
         return HttpResponse.json(response);
     })),

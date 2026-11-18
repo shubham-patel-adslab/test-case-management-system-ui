@@ -1,7 +1,7 @@
 import { toPageType } from '../../shared/mapper/page.mapper';
 import type { UserCreateRequestDto, UserUpdateRequestDto } from './user.request.dto';
-import type { RoleResponseDto, UserDetailsResponseDto, UserPageResponseDto } from './user.response.dto';
-import type { RoleType, UserDetailsType, UserFormType, UserPageType, UserUpdateType } from './user.type';
+import type { RoleResponseDto, UserDetailsResponseDto, UserPageResponseDto, UserReferenceResponseDto } from './user.response.dto';
+import type { RoleType, UserDetailsType, UserFormType, UserPageType, UserReferenceType, UserUpdateType } from './user.type';
 
 export function toUserCreateRequestDto(form: UserFormType): UserCreateRequestDto {
     return {
@@ -52,4 +52,8 @@ export function toRole(dto: RoleResponseDto): RoleType {
         name: dto.name,
         description: dto.description,
     };
+}
+
+export function toUserReference(dto: UserReferenceResponseDto): UserReferenceType {
+    return { id: dto.id, firstName: dto.firstName, lastName: dto.lastName };
 }

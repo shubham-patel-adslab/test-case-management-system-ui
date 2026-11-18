@@ -1,3 +1,10 @@
+import type { TestSuiteSortField } from './test-suite.type';
+import type { ListSort } from '../../shared/type/sort.type';
+
+// GET …/test-suites `sort` fields; name A→Z by default, like the API (ui-requirements §6.1 "List order").
+export const TEST_SUITE_SORT_FIELDS = ['name', 'createdAt', 'updatedAt'] as const;
+export const TEST_SUITE_DEFAULT_SORT: ListSort<TestSuiteSortField> = { field: 'name', direction: 'asc' };
+
 // The suites of a project as options (test case form, list filter): the API's largest page. Suites are
 // few per project; if a project ever has more, the picker shows the first 100 by name.
 export const TEST_SUITE_OPTIONS_PAGE_SIZE = 100;

@@ -6,12 +6,13 @@ import styles from './AppHeader.module.scss';
 
 type AppHeaderProps = {
     onOpenSidebar: () => void;
-    // Right-aligned header content supplied by the app (e.g. the user menu), so this shared component
-    // doesn't depend on any feature.
+    // Header content supplied by the app, so this shared component doesn't depend on any feature: `start`
+    // on the left (e.g. the project switcher), `extra` right-aligned (e.g. the user menu).
+    start?: React.ReactNode;
     extra?: React.ReactNode;
 };
 
-export function AppHeader({ onOpenSidebar, extra }: AppHeaderProps) {
+export function AppHeader({ onOpenSidebar, start, extra }: AppHeaderProps) {
     const { t } = useTranslation('common');
     const isMobile = !Grid.useBreakpoint().lg;
 
@@ -25,6 +26,7 @@ export function AppHeader({ onOpenSidebar, extra }: AppHeaderProps) {
                     aria-label={t('nav.openSidebar')}
                 />
             )}
+            {start && <div className={styles['tb-app-header__start']}>{start}</div>}
             {extra && <div className={styles['tb-app-header__extra']}>{extra}</div>}
         </Layout.Header>
     );

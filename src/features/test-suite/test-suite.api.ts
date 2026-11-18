@@ -11,7 +11,7 @@ import type { TestSuiteDetailsResponseDto, TestSuitePageResponseDto } from './te
 // All suite routes are nested under their project (ui-requirements §6.3).
 const testSuitesUrl = (projectId: number) => `/projects/${projectId}/test-suites`;
 
-// Sorted by name by the API.
+// Name A→Z unless `sort` says otherwise (the API's default).
 export async function getTestSuites(
     projectId: number,
     request: TestSuitePageRequestDto,

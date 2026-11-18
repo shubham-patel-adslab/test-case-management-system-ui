@@ -5,6 +5,12 @@ export const RESOURCE_CODE = {
     PROJECT: 'PROJECT',
     // Scope, not a thing: acting on every project, not only those the user is a member of (ADMIN).
     ALL_PROJECTS: 'ALL_PROJECTS',
+    TEST_CASE: 'TEST_CASE',
+    TEST_SUITE: 'TEST_SUITE',
+    TEST_EXECUTION: 'TEST_EXECUTION',
+    // Assigning test cases (or a suite run) to someone else.
+    TEST_ASSIGNMENT: 'TEST_ASSIGNMENT',
+    DEFECT: 'DEFECT',
 } as const;
 
 export const PERMISSION_CODE = {

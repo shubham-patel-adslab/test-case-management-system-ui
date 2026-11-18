@@ -60,9 +60,8 @@ export function toTestCaseFormValues(testCase: TestCaseDetailsType): TestCaseFor
         preConditions: testCase.preConditions,
         postConditions: testCase.postConditions,
         tags: testCase.tags,
-        steps: [...testCase.steps]
-            .sort((a, b) => a.order - b.order)
-            .map((step) => ({ action: step.action, expectedResult: step.expectedResult })),
+        // In step order, as the API sends them.
+        steps: testCase.steps.map((step) => ({ action: step.action, expectedResult: step.expectedResult })),
         suiteIds: testCase.suiteIds,
     };
 }

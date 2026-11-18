@@ -1,0 +1,56 @@
+{
+    "run": {
+        "button": "Run suite",
+        "emptySuite": "Add test cases to the suite first",
+        "dialogTitle": "Run {{suite}}",
+        "dialogText_one": "Creates a pending run of its {{count}} test case, in suite order.",
+        "dialogText_other": "Creates a pending run of each of its {{count}} test cases, in suite order.",
+        "assigneeLabel": "Assign the run to",
+        "me": "Me",
+        "unassigned": "Unassigned — anyone who can run tests picks them up",
+        "submit": "Run",
+        "cancel": "Cancel",
+        "started_one": "Started a run of {{count}} test case",
+        "started_other": "Started a run of {{count}} test cases",
+        "emptyConflict": "This suite has no test cases to run.",
+        "assigneeCannotExecute": "{{name}} can't be assigned tests (their role can't run tests, or they're no longer active).",
+        "suiteGone": "This test suite no longer exists.",
+        "forbidden": "You don't have permission to assign the run to someone else.",
+        "error": "Couldn't start the run. Please try again."
+    },
+    "list": {
+        "title": "Runs",
+        "createdAtColumn": "Started",
+        "createdByColumn": "Started by",
+        "progressColumn": "Progress",
+        "resultsColumn": "Results",
+        "report": "Report",
+        "empty": "This suite hasn't been run yet",
+        "executed": "{{executed}} / {{total}}"
+    },
+    "report": {
+        "title": "{{suite}} — run of {{date}}",
+        "openSuite": "Open suite",
+        "suiteDeleted": "The suite was deleted; this report keeps its name.",
+        "createdByLabel": "Started by",
+        "createdAtLabel": "Started",
+        "chartTitle": "Status",
+        "executionsTitle": "Executions ({{count}})",
+        "orderColumn": "#",
+        "testCaseColumn": "Test case",
+        "statusColumn": "Status",
+        "assigneeColumn": "Assignee",
+        "executedByColumn": "Executed by",
+        "executedAtColumn": "Executed",
+        "chartSummary_one": "Status of the run's {{count}} execution: {{parts}}",
+        "chartSummary_other": "Status of the run's {{count}} executions: {{parts}}",
+        "defectColumn": "Defect"
+    },
+    "status": {
+        "pending": "Pending",
+        "passed": "Passed",
+        "failed": "Failed",
+        "blocked": "Blocked",
+        "skipped": "Skipped"
+    }
+}

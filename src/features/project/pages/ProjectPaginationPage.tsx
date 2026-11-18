@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { Button, Flex, Table, type TableColumnsType } from 'antd';
+import { Button, Flex, Table, type TableColumnsType, type TableProps } from 'antd';
 
 import { ProjectStatusTag } from '../components/ProjectStatusTag';
 import { getProjects } from '../project.api';
+import { PROJECT_DEFAULT_SORT, PROJECT_SORT_FIELDS } from '../project.constant';
 import { toProjectPage } from '../project.mapper';
 import type { ProjectDetailsType } from '../project.type';
 import { useAuth } from '../../auth/auth.context';
@@ -13,6 +14,8 @@ import { PageHeader } from '../../../shared/components/PageHeader';
 import { QueryErrorState } from '../../../shared/components/QueryErrorState';
 import { QueryLoadingState } from '../../../shared/components/QueryLoadingState';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../../../shared/constant/page.constant';
+import { SORT_PARAM } from '../../../shared/constant/sort.constant';
+import { fromTableSorter, parseListSort, setListSortParam, toColumnSortOrder, toSortParam } from '../../../shared/list/list-sort';
 
 export function ProjectPaginationPage() {
     const { t } = useTranslation('project');
@@ -23,12 +26,21 @@ export function ProjectPaginationPage() {
 
     const page = Number(searchParams.get('page')) || DEFAULT_PAGE;
     const pageSize = Number(searchParams.get('pageSize')) || DEFAULT_PAGE_SIZE;
+    // Server-side order, in the URL; name A→Z (the API default) unless the user picks another.
+    const sort = parseListSort(searchParams.get(SORT_PARAM), PROJECT_SORT_FIELDS, PROJECT_DEFAULT_SORT);
+    const request = { page, pageSize, sort: toSortParam(sort, PROJECT_DEFAULT_SORT) };
 
     const projectQuery = useQuery({
-        queryKey: ['projects', 'list', { page, pageSize }],
-        queryFn: ({ signal }) => getProjects({ page, pageSize }, signal),
+        queryKey: ['projects', 'list', request],
+        queryFn: ({ signal }) => getProjects(request, signal),
         placeholderData: keepPreviousData,
     });
+
+    const handleTableChange: TableProps<ProjectDetailsType>['onChange'] = (_pagination, _filters, sorter, extra) => {
+        if (extra.action === 'sort') {
+            setSearchParams((prev) => setListSortParam(prev, fromTableSorter(sorter, PROJECT_SORT_FIELDS, PROJECT_DEFAULT_SORT), PROJECT_DEFAULT_SORT));
+        }
+    };
 
     if (projectQuery.isError) {
         return <QueryErrorState onRetry={() => void projectQuery.refetch()} />;
@@ -45,6 +57,8 @@ export function ProjectPaginationPage() {
         {
             title: t('table.nameColumn'),
             key: 'name',
+            sorter: true,
+            sortOrder: toColumnSortOrder(sort, 'name'),
             render: (_, project) => <Link to={`/projects/${project.id}`}>{project.name}</Link>,
         },
         {
@@ -97,6 +111,7 @@ export function ProjectPaginationPage() {
                 dataSource={projectPage.items}
                 loading={projectQuery.isFetching}
                 scroll={{ x: 'max-content' }}
+                onChange={handleTableChange}
                 pagination={{
                     current: projectPage.page,
                     pageSize: projectPage.pageSize,

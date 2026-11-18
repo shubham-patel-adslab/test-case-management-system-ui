@@ -1,39 +1,45 @@
-import { ProjectOutlined, TeamOutlined } from '@ant-design/icons';
-
+import { getProjectNavItems, NAV_ITEMS, PROJECT_SWITCH_TARGETS, type GuardedNavItem } from './app-nav';
 import { AppLayout } from '../shared/components/layout/AppLayout';
-import type { AppNavItem } from '../shared/components/layout/AppSidebar';
+import type { AppNavGroup } from '../shared/components/layout/AppSidebar';
 import { useAuth } from '../features/auth/auth.context';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../features/auth/auth.constant';
 import { UserMenu } from '../features/auth/components/UserMenu';
-import type { PermissionCode, ResourceCode } from '../features/auth/auth.type';
+import { CurrentProjectProvider } from '../features/project/components/CurrentProjectProvider';
+import { ProjectSwitcher } from '../features/project/components/ProjectSwitcher';
+import { useCurrentProjectContext } from '../features/project/current-project.context';
 
-type GuardedNavItem = AppNavItem & {
-    requires: { resource: ResourceCode; permission: PermissionCode };
-};
-
-const NAV_ITEMS: GuardedNavItem[] = [
-    {
-        key: 'projects',
-        path: '/projects',
-        icon: <ProjectOutlined />,
-        labelKey: 'nav.projects',
-        requires: { resource: RESOURCE_CODE.PROJECT, permission: PERMISSION_CODE.READ },
-    },
-    {
-        key: 'users',
-        path: '/users',
-        icon: <TeamOutlined />,
-        labelKey: 'nav.users',
-        requires: { resource: RESOURCE_CODE.USER, permission: PERMISSION_CODE.READ },
-    },
-];
-
-// App-level composition of the shared layout with the auth feature: only the nav items the signed-in user
-// may open, and the user menu. Keeps shared/ free of feature imports.
 export function AppShell() {
+    return (
+        <CurrentProjectProvider>
+            <AppShellLayout />
+        </CurrentProjectProvider>
+    );
+}
+
+// App-level composition of the shared layout with the features: only the nav items the signed-in user may
+// open, the current project's section, the project switcher and the user menu. Keeps shared/ free of
+// feature imports.
+function AppShellLayout() {
     const { can } = useAuth();
+    const { projectQuery } = useCurrentProjectContext();
 
-    const navItems = NAV_ITEMS.filter(({ requires }) => can(requires.resource, requires.permission));
+    const isAllowed = ({ requires }: GuardedNavItem) => can(requires.resource, requires.permission);
+    const navItems = NAV_ITEMS.filter(isAllowed);
 
-    return <AppLayout navItems={navItems} headerExtra={<UserMenu />} />;
+    // Shown once the project has loaded, titled with its name; a missing project shows no section.
+    const project = projectQuery?.data;
+    const projectNav: AppNavGroup | undefined = project && {
+        key: 'project',
+        title: project.name,
+        items: getProjectNavItems(project.id).filter(isAllowed),
+    };
+
+    return (
+        <AppLayout
+            navItems={navItems}
+            navGroup={projectNav}
+            headerStart={can(RESOURCE_CODE.PROJECT, PERMISSION_CODE.READ) && <ProjectSwitcher sectionTargets={PROJECT_SWITCH_TARGETS} />}
+            headerExtra={<UserMenu />}
+        />
+    );
 }

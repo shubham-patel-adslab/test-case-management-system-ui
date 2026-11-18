@@ -3,18 +3,20 @@ import { Grid, Layout } from 'antd';
 import { Outlet } from 'react-router';
 
 import { AppHeader } from '../AppHeader';
-import { AppSidebar, type AppNavItem } from '../AppSidebar';
+import { AppSidebar, type AppNavGroup, type AppNavItem } from '../AppSidebar';
 import { QueryLoadingState } from '../../QueryLoadingState';
 import styles from './AppLayout.module.scss';
 
 type AppLayoutProps = {
     // Passed through to the sidebar.
     navItems: AppNavItem[];
-    // Passed through to AppHeader's right-hand slot.
+    navGroup?: AppNavGroup;
+    // Passed through to AppHeader's left- and right-hand slots.
+    headerStart?: React.ReactNode;
     headerExtra?: React.ReactNode;
 };
 
-export function AppLayout({ navItems, headerExtra }: AppLayoutProps) {
+export function AppLayout({ navItems, navGroup, headerStart, headerExtra }: AppLayoutProps) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const isMobile = !Grid.useBreakpoint().lg;
 
@@ -27,9 +29,9 @@ export function AppLayout({ navItems, headerExtra }: AppLayoutProps) {
 
     return (
         <Layout className={layoutClassName}>
-            <AppSidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} navItems={navItems} />
+            <AppSidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} navItems={navItems} navGroup={navGroup} />
             <Layout className={styles['tb-app-layout__main']}>
-                <AppHeader onOpenSidebar={() => setSidebarCollapsed(false)} extra={headerExtra} />
+                <AppHeader onOpenSidebar={() => setSidebarCollapsed(false)} start={headerStart} extra={headerExtra} />
                 <Layout.Content className={styles['tb-app-layout__content']}>
                     {/* Inside Content, so sidebar + header stay visible while a lazy page chunk loads. */}
                     <Suspense fallback={<QueryLoadingState />}>

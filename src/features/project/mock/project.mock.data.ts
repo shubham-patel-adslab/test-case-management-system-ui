@@ -1,6 +1,6 @@
 import type { ProjectDetailsResponseDto, ProjectMemberResponseDto } from '../project.response.dto';
 import { PROJECT_STATUSES } from '../project.constant';
-import { userMock, type MockUser } from '../../user/mock/user.mock.data';
+import { compareMockUserNames, userMock, type MockUser } from '../../user/mock/user.mock.data';
 
 // A project as the mock "database" holds it: the team as user ids (the backend's project_members).
 export type MockProject = Omit<ProjectDetailsResponseDto, 'members'> & {
@@ -68,9 +68,8 @@ export function toProjectDetailsResponse(project: MockProject): ProjectDetailsRe
     const members = project.memberIds
         .map((userId) => userMock.find((user) => user.id === userId))
         .filter((user) => user !== undefined)
-        .sort((a, b) => a.firstName.localeCompare(b.firstName)
-            || (a.lastName ?? '').localeCompare(b.lastName ?? '')
-            || a.email.localeCompare(b.email))
+        // By full name, case-insensitive, like the backend.
+        .sort((a, b) => compareMockUserNames(a, b) || a.id.localeCompare(b.id))
         .map(toProjectMemberResponse);
 
     return {

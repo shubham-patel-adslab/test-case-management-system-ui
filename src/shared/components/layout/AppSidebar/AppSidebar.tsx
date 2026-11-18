@@ -6,23 +6,18 @@ import { Link, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import styles from './AppSidebar.module.scss';
-
-export type AppNavItem = {
-    key: string;
-    path: string;
-    icon: React.ReactNode;
-    // i18n key in the 'common' namespace.
-    labelKey: string;
-};
+import type { AppNavGroup, AppNavItem } from './app-nav.type';
+import { findSelectedKey } from './nav-selection';
 
 type AppSidebarProps = {
     collapsed: boolean;
     onCollapse: (collapsed: boolean) => void;
     // Supplied by the app (already filtered by permission), so this shared component knows no features.
     navItems: AppNavItem[];
+    navGroup?: AppNavGroup;
 };
 
-export function AppSidebar({ collapsed, onCollapse, navItems }: AppSidebarProps) {
+export function AppSidebar({ collapsed, onCollapse, navItems, navGroup }: AppSidebarProps) {
     const { t } = useTranslation('common');
     const location = useLocation();
     const { token } = theme.useToken();
@@ -36,13 +31,32 @@ export function AppSidebar({ collapsed, onCollapse, navItems }: AppSidebarProps)
         onCollapse(isMobile);
     }, [isMobile, onCollapse]);
 
-    const selectedKey = navItems.find((item) => location.pathname.startsWith(item.path))?.key;
+    const selectedKey = findSelectedKey([...navItems, ...(navGroup?.items ?? [])], location.pathname);
 
-    const items: MenuProps['items'] = navItems.map((item) => ({
+    const toMenuItem = (item: AppNavItem) => ({
         key: item.key,
         icon: item.icon,
         label: <Link to={item.path}>{t(item.labelKey)}</Link>
-    }));
+    });
+
+    // The collapsed rail has no room for the group's title (it would be cut to "Mobile …"); the divider
+    // still separates the group.
+    const isRail = !isMobile && collapsed;
+
+    const items: MenuProps['items'] = [
+        ...navItems.map(toMenuItem),
+        ...(navGroup && navGroup.items.length > 0
+            ? [
+                { type: 'divider' as const, key: `${navGroup.key}-divider` },
+                {
+                    type: 'group' as const,
+                    key: navGroup.key,
+                    label: isRail ? undefined : navGroup.title,
+                    children: navGroup.items.map(toMenuItem),
+                },
+            ]
+            : []),
+    ];
 
     const appName = t('appName');
 

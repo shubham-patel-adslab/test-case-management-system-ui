@@ -1,11 +1,13 @@
 import { http, HttpResponse } from 'msw';
 
-import { mockUserMatchesSearch, roleMock, toUserDetailsResponse, userMock, type MockUser } from './user.mock.data';
+import { compareMockUserNames, mockUserMatchesSearch, roleMock, toUserDetailsResponse, userMock, type MockUser } from './user.mock.data';
+import { USER_DEFAULT_SORT, USER_SORT_FIELDS } from '../user.constant';
 import type { UserCreateRequestDto, UserStatusUpdateRequestDto, UserUpdateRequestDto } from '../user.request.dto';
 import type { UserDetailsResponseDto, UserPageResponseDto } from '../user.response.dto';
 import { getMockSessionUser, mockErrorResponse, withMockPermission } from '../../auth/mock/auth.mock.handler';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../../auth/auth.constant';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../../../shared/constant/page.constant';
+import { compareMockText, getMockSort, toMockSortComparator } from '../../../shared/mock/page.mock';
 
 const API_URL = import.meta.env.VITE_TCMS_API_URL;
 const USERS_URL = `${API_URL}/users`;
@@ -40,12 +42,21 @@ export const userMockHandler = [
         const pageSize = Number(url.searchParams.get('pageSize')) || DEFAULT_PAGE_SIZE;
         const search = url.searchParams.get('search')?.trim().toLowerCase();
         const status = url.searchParams.get('status');
+        const { sort, error } = getMockSort(url, USER_SORT_FIELDS, USER_DEFAULT_SORT);
 
-        // Newest first, like the backend.
+        if (error) {
+            return error;
+        }
+
+        // Name A→Z (case-insensitive) unless `sort` says otherwise, like the backend.
         const matches = userMock
             .filter((user) => !status || user.status === status)
             .filter((user) => mockUserMatchesSearch(user, search ?? ''))
-            .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+            .sort(toMockSortComparator<MockUser, typeof sort.field>(sort, {
+                name: compareMockUserNames,
+                email: (a, b) => compareMockText(a.email, b.email),
+                createdAt: (a, b) => a.createdAt.localeCompare(b.createdAt),
+            }));
 
         const startIndex = (page - 1) * pageSize;
         const response: UserPageResponseDto = {
@@ -186,5 +197,8 @@ export const userMockHandler = [
         return new HttpResponse(null, { status: 204 });
     })),
 
-    http.get(`${API_URL}/roles`, withMockPermission(USER, READ, () => HttpResponse.json(roleMock))),
+    // By name (Admin, Read-only, Tester, Test lead), like the backend.
+    http.get(`${API_URL}/roles`, withMockPermission(USER, READ, () => HttpResponse.json(
+        [...roleMock].sort((a, b) => compareMockText(a.name, b.name) || a.code.localeCompare(b.code)),
+    ))),
 ];

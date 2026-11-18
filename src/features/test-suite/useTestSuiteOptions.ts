@@ -11,7 +11,7 @@ function toTestSuiteOptions(page: TestSuitePageResponseDto): TestSuiteOption[] {
     return page.items.map((suite) => ({ value: suite.id, label: suite.name }));
 }
 
-// A project's suites as select options, by name — used by the test case form, filter and list (suite
+// A project's suites as select options, by name (the API's default order, so no `sort`) — used by the test case form, filter and list (suite
 // names for the ids on each test case).
 export function useTestSuiteOptions(projectId: number) {
     const request = { page: 1, pageSize: TEST_SUITE_OPTIONS_PAGE_SIZE };

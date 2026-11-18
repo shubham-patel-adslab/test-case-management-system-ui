@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import type { RouteObject } from 'react-router';
 
+import { ProjectWorkspaceLayout } from './components/ProjectWorkspaceLayout';
 import { RequirePermission } from '../auth/components/RequirePermission';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../auth/auth.constant';
 
@@ -23,17 +24,33 @@ const ProjectFormPage = lazy(async () => {
 export const projectRoutes: RouteObject[] = [
     {
         element: <RequirePermission resource={RESOURCE_CODE.PROJECT} permission={PERMISSION_CODE.READ} />,
-        children: [
-            { path: '/projects', element: <ProjectPaginationPage /> },
-            { path: '/projects/:projectId', element: <ProjectViewPage /> },
-        ],
+        children: [{ path: '/projects', element: <ProjectPaginationPage /> }],
     },
     {
         element: <RequirePermission resource={RESOURCE_CODE.PROJECT} permission={PERMISSION_CODE.CREATE} />,
         children: [{ path: '/projects/create', element: <ProjectFormPage /> }],
     },
-    {
-        element: <RequirePermission resource={RESOURCE_CODE.PROJECT} permission={PERMISSION_CODE.UPDATE} />,
-        children: [{ path: '/projects/:projectId/update', element: <ProjectFormPage /> }],
-    },
 ];
+
+// Everything inside one project (/projects/:projectId/…): the project's own pages plus the routes of the
+// features that live in a project (test cases, suites, executions), which the app router passes in — the
+// project feature doesn't import them. ProjectWorkspaceLayout loads the project once for all of them.
+export function projectWorkspaceRoute(featureRoutes: RouteObject[]): RouteObject {
+    return {
+        element: <RequirePermission resource={RESOURCE_CODE.PROJECT} permission={PERMISSION_CODE.READ} />,
+        children: [
+            {
+                path: '/projects/:projectId',
+                element: <ProjectWorkspaceLayout />,
+                children: [
+                    { index: true, element: <ProjectViewPage /> },
+                    {
+                        element: <RequirePermission resource={RESOURCE_CODE.PROJECT} permission={PERMISSION_CODE.UPDATE} />,
+                        children: [{ path: 'update', element: <ProjectFormPage /> }],
+                    },
+                    ...featureRoutes,
+                ],
+            },
+        ],
+    };
+}

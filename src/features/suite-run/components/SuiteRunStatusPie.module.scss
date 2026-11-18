@@ -1,0 +1,9 @@
+.tb-suite-run-status-pie {
+    margin: 0;
+}
+
+// The chart's numbers as text, under it — for screen readers and anyone who prefers reading them.
+.tb-suite-run-status-pie__caption {
+    display: block;
+    text-align: center;
+}

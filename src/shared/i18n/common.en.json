@@ -5,7 +5,11 @@
         "projects": "Projects",
         "users": "Users",
         "toggleSidebar": "Toggle sidebar",
-        "openSidebar": "Open navigation menu"
+        "openSidebar": "Open navigation menu",
+        "projectOverview": "Overview",
+        "testCases": "Test cases",
+        "testSuites": "Test suites",
+        "executions": "Executions"
     },
     "queryState": {
         "loading": "Loading...",

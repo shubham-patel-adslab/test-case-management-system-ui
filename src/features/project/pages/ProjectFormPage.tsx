@@ -11,11 +11,13 @@ import {
     toProjectFormValues,
     toProjectUpdateRequestDto,
 } from '../project.mapper';
+import { projectDetailsQueryKey } from '../project.query';
 import type { ProjectFormType, ProjectMemberType } from '../project.type';
 import { useAuth } from '../../auth/auth.context';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../../auth/auth.constant';
 import type { AuthSessionType } from '../../auth/auth.type';
 import { API_ERROR_CODE, getApiErrorCode, getApiErrorDetails } from '../../../app/api-error';
+import { FORM_EXIT_NAVIGATION } from '../../../shared/components/form/FormActions';
 import { NotFoundState } from '../../../shared/components/NotFoundState';
 import { PageHeader } from '../../../shared/components/PageHeader';
 import { QueryErrorState } from '../../../shared/components/QueryErrorState';
@@ -47,7 +49,7 @@ export function ProjectFormPage() {
     const isUpdateMode = projectID !== undefined;
 
     const projectQuery = useQuery({
-        queryKey: ['projects', 'detail', projectID],
+        queryKey: projectDetailsQueryKey(projectID),
         queryFn: ({ signal }) => getProject(projectID!, signal),
         enabled: isUpdateMode && isValidProjectID,
     });
@@ -71,7 +73,7 @@ export function ProjectFormPage() {
 
             message.success(isUpdateMode ? t('notifications.updateSuccess') : t('notifications.createSuccess'));
 
-            void navigate(`/projects/${project.id}`);
+            void navigate(`/projects/${project.id}`, FORM_EXIT_NAVIGATION);
         } catch (error) {
             if (isMemberError(error)) {
                 message.error(t('notifications.memberUnavailable'));
@@ -121,7 +123,7 @@ export function ProjectFormPage() {
             <ProjectForm
                 onSubmit={handleSubmit}
                 // Back to where the user came from: the project for an update, the list for a create.
-                onCancel={() => void navigate(isUpdateMode ? `/projects/${projectId}` : '/projects')}
+                onCancel={() => void navigate(isUpdateMode ? `/projects/${projectId}` : '/projects', FORM_EXIT_NAVIGATION)}
                 isSubmitting={isSubmitting}
                 defaultValues={defaultValues}
                 initialMembers={initialMembers}

@@ -7,13 +7,21 @@ import type {
     TestSuiteCreateRequestDto,
     TestSuiteUpdateRequestDto,
 } from '../test-suite.request.dto';
+import { TEST_SUITE_DEFAULT_SORT, TEST_SUITE_SORT_FIELDS } from '../test-suite.constant';
 import type { TestSuitePageResponseDto } from '../test-suite.response.dto';
 import { getMockSessionUser, mockErrorResponse, withMockPermission } from '../../auth/mock/auth.mock.handler';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../../auth/auth.constant';
 import type { PermissionCode } from '../../auth/auth.type';
 import { findMockProjectInScope } from '../../project/mock/project.mock.handler';
 import { findMockTestCase } from '../../test-case/mock/test-case.mock.handler';
-import { getMockPaging, mockValidationError, toMockPage } from '../../../shared/mock/page.mock';
+import {
+    compareMockText,
+    getMockPaging,
+    getMockSort,
+    mockValidationError,
+    toMockPage,
+    toMockSortComparator,
+} from '../../../shared/mock/page.mock';
 
 const TEST_SUITES_URL = `${import.meta.env.VITE_TCMS_API_URL}/projects/:projectId/test-suites`;
 const NAME_TAKEN_MESSAGE = 'A test suite with this name already exists in the project';
@@ -43,7 +51,7 @@ const nameTaken = () => HttpResponse.json(
 );
 
 export const testSuiteMockHandler = [
-    // By name, like the backend.
+    // Name A→Z (case-insensitive) unless `sort` says otherwise, like the backend.
     http.get(TEST_SUITES_URL, withMockPermission(RESOURCE_CODE.TEST_SUITE, PERMISSION_CODE.READ, ({ params, request }) => {
         const projectId = Number(params.projectId);
 
@@ -51,10 +59,20 @@ export const testSuiteMockHandler = [
             return notFound('Project not found');
         }
 
-        const { page, pageSize } = getMockPaging(request);
+        const { url, page, pageSize } = getMockPaging(request);
+        const { sort, error } = getMockSort(url, TEST_SUITE_SORT_FIELDS, TEST_SUITE_DEFAULT_SORT);
+
+        if (error) {
+            return error;
+        }
+
         const suites = testSuiteMock
             .filter((suite) => suite.projectId === projectId)
-            .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()) || a.id - b.id)
+            .sort(toMockSortComparator<MockTestSuite, typeof sort.field>(sort, {
+                name: (a, b) => compareMockText(a.name, b.name),
+                createdAt: (a, b) => a.createdAt.localeCompare(b.createdAt),
+                updatedAt: (a, b) => a.updatedAt.localeCompare(b.updatedAt),
+            }))
             .map(toTestSuiteSummaryResponse);
 
         const response: TestSuitePageResponseDto = toMockPage(suites, page, pageSize);

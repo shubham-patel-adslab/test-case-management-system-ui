@@ -60,5 +60,11 @@
         "updateSuccess": "Project updated successfully",
         "saveError": "Failed to save project. Please try again.",
         "memberUnavailable": "A selected member can no longer be added (deactivated or removed). Remove them and save again."
+    },
+    "switcher": {
+        "label": "Current project",
+        "placeholder": "Select a project",
+        "notFound": "No matching projects",
+        "loadError": "Couldn't load projects"
     }
 }
