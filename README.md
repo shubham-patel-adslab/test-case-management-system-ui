@@ -4,8 +4,8 @@ React frontend for the Test Case Management System: projects, test cases, test s
 defects, attachments and an analytics dashboard, with role-based access for admins, test leads, testers and
 read-only users.
 
-- Requirements: [document/prd.md](document/prd.md) (full assignment) and
-  [document/ui-requirements.md](document/ui-requirements.md) (UI scope and API contract).
+- Requirements: the Full Stack Test Case Management System assignment. [PRD coverage](#prd-coverage) maps
+  its frontend requirements to the code.
 - Backend: the separate tcms-api repository (Node.js, Express, PostgreSQL). Its `document/user-guide.md`
   describes the server-side rules behind the screens below.
 
@@ -15,6 +15,7 @@ read-only users.
 - [Local development](#local-development)
 - [Demo credentials](#demo-credentials)
 - [User guide](#user-guide)
+- [PRD coverage](#prd-coverage)
 - [Environment](#environment)
 - [Scripts](#scripts)
 - [Project structure](#project-structure)
@@ -93,8 +94,8 @@ set-password link.
   titled with the project's name holds its **Overview**, **Test cases**, **Test suites** and **Executions**.
 - **Project switcher** (header, left): jump to another project. You stay in the same section, e.g. its test
   case list.
-- **Theme** (header, moon/sun button): switch between light and dark. Until you choose, the app follows your
-  operating system's setting; your choice is remembered in this browser.
+- **Theme** (header, moon/sun button): switch between light and dark. The app starts light; your choice is
+  remembered in this browser.
 - **Account menu** (header, your name): your email and role, and **Sign out**.
 - **Lists** are paged (20, 50 or 100 per page) and sorted by name or title, A to Z, unless you click another
   column header. Search, filters, sorting and the page are part of the address, so a link or a refresh keeps
@@ -245,6 +246,40 @@ They can also download attachments.
 
 ![The dashboard in the dark theme](document/screenshots/dark-theme.png)
 
+## PRD coverage
+
+Where the assignment's frontend requirements live. Server-side rules (JWT, RBAC middleware, Redis, rate
+limiting, validation, Swagger, schema) are in the tcms-api repository.
+
+| PRD requirement | Where |
+| --- | --- |
+| Login, JWT, protected routes | `features/auth`: `AuthProvider`, `ProtectedRoute`. The JWT stays in an httpOnly cookie that scripts can't read; the session is restored with `GET /auth/me` on load, and any `401` signs out with a return link |
+| RBAC: conditional rendering | `can(resource, permission)` from the auth context reads the API's permission map (no role-name checks). `RequirePermission` shows a 403 page. Execution buttons stay visible but disabled for read-only users |
+| Projects, team members | `features/project` (admin and test lead create/edit; team picker searches the server) |
+| Test cases: CRUD, steps, tags, suites, search and filters, bulk | `features/test-case`. Filters, sort and page live in the URL; search is debounced; bulk delete, priority, add to suite and assign to tester each send one request |
+| Test execution: results, comments, attachments, defects, history, audit, assignment, progress | `features/test-execution`, `defect`, `attachment` |
+| Test suites: add/remove/reorder, run a whole suite, suite report | `features/test-suite`, `suite-run` |
+| Dashboard for every role | `features/analytics`: summary, pass rate, coverage, defect density, trend, by priority/type, by tester |
+| `useContext`: auth, theme, current project, permissions | `features/auth/auth.context.ts`, `shared/theme/theme.context.ts`, `features/project/current-project.context.ts` |
+| `useCallback`: test case form, execution components | `TestCaseForm`, `TestCaseStepsField`, `ExecutionResultForm` (with `React.memo` on `ExecutionStepRow`), `TestSuiteForm` |
+| `useMemo`: statistics, pass rates, coverage, test case list | `DashboardPage`, the analytics charts, `ExecutionProgressSummary`, `ExecutionStatusPie`, `TestCasePaginationPage` |
+| `React.lazy` + `Suspense` per route | every `features/*/*.routes.tsx`; the `Suspense` boundary is in `AppLayout` |
+| Virtual scrolling | the test case list at page sizes of 50 and 100 (antd `Table` `virtual`) |
+| Lazy-loaded execution history | `TestCaseViewPage` loads `TestCaseExecutionHistory` with `React.lazy` when its section is opened |
+| Charts (Recharts): pie, line, bar | status pie (dashboard, suite report), daily trend line, bars by priority/type and by tester |
+| Pagination | server-side on every list (20 / 50 / 100) |
+| Caching effectiveness (Live Demo) | **Cache metrics** page (admin) |
+| Bonus: dark mode | `shared/theme` (light by default, choice remembered per browser) |
+
+Decisions that differ from the assignment's wording:
+
+- **No self-registration.** Users don't sign themselves up, because a sign-up form would let anyone grant
+  themselves a role. Instead an admin invites them, and each user sets their own password from an emailed,
+  single-use link.
+- **Rate limiting is enforced by the API only.** When a limit is hit, the UI shows its generic error.
+- **Data is cached on the server, not in the browser.** Redis caches reads and clears them on writes, so the UI
+  always asks for fresh data (TanStack Query with `staleTime` 0).
+
 ## Environment
 
 | Variable | Purpose | Default (`.env.development`) |
@@ -281,5 +316,5 @@ src/
 │                   #   suite-run, defect, attachment, analytics): pages, components, API, DTOs, mocks
 ├── shared/         # cross-feature pieces: layout, form controls, charts' legend, theme, formatters
 └── styles/         # global SCSS partials
-document/           # requirements, per-feature session notes, user-guide screenshots
+document/screenshots/  # user-guide screenshots
 ```
