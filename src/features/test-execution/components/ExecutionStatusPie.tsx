@@ -9,6 +9,7 @@ import type { ExecutionCountKey } from '../test-execution.type';
 import { useExecutionStatusColors } from '../useExecutionStatusColors';
 import { ChartLegend } from '../../../shared/components/ChartLegend';
 import { useHiddenSeries } from '../../../shared/hooks/useHiddenSeries';
+import { useChartTooltipStyle } from '../../../shared/hooks/useChartTooltipStyle';
 
 const CHART_HEIGHT = 240;
 const INNER_RADIUS = 55;
@@ -25,6 +26,7 @@ type ExecutionStatusPieProps = {
 // A status distribution as a donut (PRD Frontend Req §3: pie chart for test status distribution) — the suite
 // run report and the dashboard. The legend switches slices off; screen readers get the numbers as text.
 export function ExecutionStatusPie({ counts, summaryLabel }: ExecutionStatusPieProps) {
+    const tooltip = useChartTooltipStyle();
     const { t } = useTranslation('testExecution');
     const { token } = theme.useToken();
     const colors = useExecutionStatusColors();
@@ -60,7 +62,7 @@ export function ExecutionStatusPie({ counts, summaryLabel }: ExecutionStatusPieP
                             >
                                 {shownSlices.map((slice) => <Cell key={slice.key} fill={slice.color} />)}
                             </Pie>
-                            <Tooltip />
+                            <Tooltip contentStyle={tooltip.contentStyle} labelStyle={tooltip.labelStyle} itemStyle={tooltip.itemStyle} />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>

@@ -9,6 +9,7 @@ import { describeCounts, useStatusSeries } from '../useStatusSeries';
 import { EXECUTION_COUNT_KEYS } from '../../test-execution/test-execution.constant';
 import { formatFullName } from '../../../shared/format/name.format';
 import { useHiddenSeries } from '../../../shared/hooks/useHiddenSeries';
+import { useChartTooltipStyle } from '../../../shared/hooks/useChartTooltipStyle';
 
 const ROW_HEIGHT = 36;
 const AXIS_HEIGHT = 40;
@@ -23,6 +24,7 @@ type AnalyticsTesterChartProps = {
 // Execution progress by tester (ui-requirements §4.5): what each person recorded in the range, by result,
 // and the work still pending for them — one horizontal stacked bar per person, in the API's order (by name).
 export function AnalyticsTesterChart({ byTester }: AnalyticsTesterChartProps) {
+    const tooltip = useChartTooltipStyle();
     const { t } = useTranslation('analytics');
     const { series, axis, gridColor, surfaceColor } = useStatusSeries(EXECUTION_COUNT_KEYS);
     const { isHidden, toggle } = useHiddenSeries();
@@ -49,7 +51,7 @@ export function AnalyticsTesterChart({ byTester }: AnalyticsTesterChartProps) {
                     <CartesianGrid horizontal={false} stroke={gridColor} />
                     <XAxis type="number" allowDecimals={false} {...axis} />
                     <YAxis type="category" dataKey="name" width={NAME_AXIS_WIDTH} {...axis} />
-                    <Tooltip />
+                    <Tooltip contentStyle={tooltip.contentStyle} labelStyle={tooltip.labelStyle} itemStyle={tooltip.itemStyle} cursor={tooltip.barCursor} />
                     {series.map(({ key, label, color }) => (
                         <Bar
                             key={key}

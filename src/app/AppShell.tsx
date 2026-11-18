@@ -1,6 +1,9 @@
+import { Flex } from 'antd';
+
 import { getProjectNavItems, NAV_ITEMS, PROJECT_SWITCH_TARGETS, type GuardedNavItem } from './app-nav';
 import { AppLayout } from '../shared/components/layout/AppLayout';
 import type { AppNavGroup } from '../shared/components/layout/AppSidebar';
+import { ThemeToggle } from '../shared/theme';
 import { useAuth } from '../features/auth/auth.context';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../features/auth/auth.constant';
 import { UserMenu } from '../features/auth/components/UserMenu';
@@ -17,7 +20,7 @@ export function AppShell() {
 }
 
 // App-level composition of the shared layout with the features: only the nav items the signed-in user may
-// open, the current project's section, the project switcher and the user menu. Keeps shared/ free of
+// open, the current project's section, the project switcher, the theme toggle and the user menu. Keeps shared/ free of
 // feature imports.
 function AppShellLayout() {
     const { can } = useAuth();
@@ -39,7 +42,12 @@ function AppShellLayout() {
             navItems={navItems}
             navGroup={projectNav}
             headerStart={can(RESOURCE_CODE.PROJECT, PERMISSION_CODE.READ) && <ProjectSwitcher sectionTargets={PROJECT_SWITCH_TARGETS} />}
-            headerExtra={<UserMenu />}
+            headerExtra={(
+                <Flex gap="small" align="center">
+                    <ThemeToggle />
+                    <UserMenu />
+                </Flex>
+            )}
         />
     );
 }

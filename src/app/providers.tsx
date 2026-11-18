@@ -1,8 +1,9 @@
-import { App as AntdApp, ConfigProvider } from 'antd';
+import { App as AntdApp } from 'antd';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
 import { AuthProvider } from '../features/auth/components/AuthProvider';
+import { ThemeProvider } from '../shared/theme';
 
 const MAX_QUERY_RETRIES = 2;
 
@@ -20,17 +21,6 @@ const queryClient = new QueryClient({
     },
 });
 
-// antd's default Layout tokens pair a dark headerBg with a light-mode headerColor,
-// which is unreadable out of the box — this is the app's theme definition, so it's
-// the one place a literal color value belongs rather than a token reference.
-const theme = {
-    components: {
-        Layout: {
-            headerBg: '#ffffff',
-        },
-    },
-};
-
 type AppProvidersProps = {
     children: React.ReactNode;
 };
@@ -38,13 +28,13 @@ type AppProvidersProps = {
 export function AppProviders({ children }: AppProvidersProps) {
     return (
         <QueryClientProvider client={queryClient}>
-            <ConfigProvider theme={theme}>
+            <ThemeProvider>
                 <AntdApp>
                     <AuthProvider>
                         {children}
                     </AuthProvider>
                 </AntdApp>
-            </ConfigProvider>
+            </ThemeProvider>
         </QueryClientProvider>
     );
 }

@@ -38,5 +38,10 @@
         "discardDescription": "Your unsaved changes will be lost.",
         "discard": "Discard",
         "keepEditing": "Keep editing"
+    },
+    "theme": {
+        "dark": "Dark theme",
+        "switchToDark": "Switch to the dark theme",
+        "switchToLight": "Switch to the light theme"
     }
 }

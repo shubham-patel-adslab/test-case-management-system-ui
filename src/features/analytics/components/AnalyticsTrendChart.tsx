@@ -8,6 +8,7 @@ import { describeCounts, useStatusSeries } from '../useStatusSeries';
 import { EXECUTION_RESULT_COUNT_KEYS } from '../../test-execution/test-execution.constant';
 import { formatCalendarDay, formatCalendarDayShort } from '../../../shared/format/date.format';
 import { useHiddenSeries } from '../../../shared/hooks/useHiddenSeries';
+import { useChartTooltipStyle } from '../../../shared/hooks/useChartTooltipStyle';
 
 const CHART_HEIGHT = 280;
 const Y_AXIS_WIDTH = 40;
@@ -21,6 +22,7 @@ type AnalyticsTrendChartProps = {
 // Results per day over the range (PRD Frontend Req §3: line chart for execution trends) — one line per result,
 // one y-axis. Every day is a point, zeros included, so gaps in testing show as dips, not as missing days.
 export function AnalyticsTrendChart({ trend }: AnalyticsTrendChartProps) {
+    const tooltip = useChartTooltipStyle();
     const { t } = useTranslation('analytics');
     const { series, axis, gridColor } = useStatusSeries(EXECUTION_RESULT_COUNT_KEYS);
     const { isHidden, toggle } = useHiddenSeries();
@@ -45,7 +47,13 @@ export function AnalyticsTrendChart({ trend }: AnalyticsTrendChartProps) {
                     <CartesianGrid vertical={false} stroke={gridColor} />
                     <XAxis dataKey="date" tickFormatter={formatCalendarDayShort} minTickGap={TICK_GAP} {...axis} />
                     <YAxis allowDecimals={false} width={Y_AXIS_WIDTH} {...axis} />
-                    <Tooltip labelFormatter={(day) => (typeof day === 'string' ? formatCalendarDay(day) : day)} />
+                    <Tooltip
+                        labelFormatter={(day) => (typeof day === 'string' ? formatCalendarDay(day) : day)}
+                        contentStyle={tooltip.contentStyle}
+                        labelStyle={tooltip.labelStyle}
+                        itemStyle={tooltip.itemStyle}
+                        cursor={tooltip.lineCursor}
+                    />
                     {series.map(({ key, label, color }) => (
                         <Line
                             key={key}

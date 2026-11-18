@@ -9,6 +9,7 @@ import type { AnalyticsBreakdown, AnalyticsType } from '../analytics.type';
 import { describeCounts, useStatusSeries } from '../useStatusSeries';
 import { EXECUTION_COUNT_KEYS } from '../../test-execution/test-execution.constant';
 import { useHiddenSeries } from '../../../shared/hooks/useHiddenSeries';
+import { useChartTooltipStyle } from '../../../shared/hooks/useChartTooltipStyle';
 
 const CHART_HEIGHT = 280;
 const Y_AXIS_WIDTH = 40;
@@ -21,6 +22,7 @@ type AnalyticsBreakdownChartProps = Pick<AnalyticsType, 'byPriority' | 'byType'>
 // Results and pending per test case priority, or per type (PRD Frontend Req §3: bar chart for pass/fail rates
 // by priority or type) — stacked, every category shown (the API lists all, zeros included).
 export function AnalyticsBreakdownChart({ byPriority, byType }: AnalyticsBreakdownChartProps) {
+    const tooltip = useChartTooltipStyle();
     const { t } = useTranslation('analytics');
     const { t: tTestCase } = useTranslation('testCase');
     const [breakdown, setBreakdown] = useState<AnalyticsBreakdown>('priority');
@@ -52,7 +54,7 @@ export function AnalyticsBreakdownChart({ byPriority, byType }: AnalyticsBreakdo
                         <CartesianGrid vertical={false} stroke={gridColor} />
                         <XAxis dataKey="name" interval={0} {...axis} />
                         <YAxis allowDecimals={false} width={Y_AXIS_WIDTH} {...axis} />
-                        <Tooltip />
+                        <Tooltip contentStyle={tooltip.contentStyle} labelStyle={tooltip.labelStyle} itemStyle={tooltip.itemStyle} cursor={tooltip.barCursor} />
                         {series.map(({ key, label, color }) => (
                             <Bar
                                 key={key}

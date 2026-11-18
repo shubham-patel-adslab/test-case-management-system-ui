@@ -1,5 +1,9 @@
 @use './styles/scrollbar';
 
+// The page behind the app (overscroll, the public auth pages) follows the theme: ThemeProvider sets these
+// from antd's tokens.
 body {
     margin: 0;
+    background-color: var(--tb-page-bg-color);
+    color: var(--tb-page-text-color);
 }
