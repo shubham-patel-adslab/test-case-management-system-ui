@@ -1,0 +1,63 @@
+{
+    "page": {
+        "title": "Dashboard",
+        "updated": "Updated {{date}} · days in {{timeZone}}"
+    },
+    "project": {
+        "label": "Project",
+        "all": "All projects",
+        "placeholder": "Select a project",
+        "notFound": "No matching projects",
+        "loadError": "Couldn't load projects",
+        "unavailableTitle": "This project isn't available",
+        "unavailableHint": "It was deleted, or you're no longer on its team.",
+        "showAll": "Show all projects"
+    },
+    "range": {
+        "label": "Date range",
+        "preset_7": "Last 7 days",
+        "preset_30": "Last 30 days",
+        "preset_90": "Last 90 days",
+        "custom": "Custom",
+        "customLabel": "Custom date range",
+        "fromPlaceholder": "From",
+        "toPlaceholder": "To"
+    },
+    "summary": {
+        "total": "Total",
+        "passed": "Passed",
+        "failed": "Failed",
+        "blocked": "Blocked",
+        "skipped": "Skipped",
+        "pending": "Pending",
+        "pendingHint": "Waiting now, whatever the range",
+        "totalHint": "Results in the range + pending",
+        "passRate": "Pass rate",
+        "passRateHint": "Passed ÷ results in the range",
+        "coverage": "Test coverage",
+        "coverageDetail": "{{executed}} of {{total}} test cases have a result in the range",
+        "defectDensity": "Defect density",
+        "defectDensityDetail": "{{defects}} defects ÷ {{executed}} test cases with a result",
+        "notAvailable": "—"
+    },
+    "empty": {
+        "title": "Nothing to show for this range",
+        "hint": "No results were recorded on these days and nothing is pending. Pick a longer range, or run some tests."
+    },
+    "chart": {
+        "legendLabel": "Show or hide series",
+        "statusTitle": "Status distribution",
+        "statusSummary_one": "Status of {{count}} execution (results in the range and pending)",
+        "statusSummary_other": "Status of {{count}} executions (results in the range and pending)",
+        "trendTitle": "Results per day",
+        "trendSummary": "Results per day from {{from}} to {{to}}, in total: {{parts}}",
+        "breakdownTitle": "Results and pending",
+        "breakdownToggle": "Group by",
+        "priority": "Priority",
+        "type": "Type",
+        "breakdownSummary": "Results and pending by {{breakdown}}: {{parts}}",
+        "testerTitle": "Progress by tester",
+        "testerSummary": "Per tester, results they recorded in the range and pending work assigned to them: {{parts}}",
+        "testerEmpty": "No one recorded results in this range or has pending work"
+    }
+}
