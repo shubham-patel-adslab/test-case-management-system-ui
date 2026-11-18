@@ -1,0 +1,35 @@
+{
+    "table": {
+        "fileColumn": "File",
+        "sizeColumn": "Size",
+        "uploadedByColumn": "Uploaded by",
+        "uploadedAtColumn": "Uploaded",
+        "empty": "No attachments",
+        "download": "Download {{name}}"
+    },
+    "upload": {
+        "choose": "Choose files",
+        "hint": "Up to {{maxFiles}} files at a time, {{maxSize}} each — PNG, JPG, GIF, PDF, TXT, LOG or CSV.",
+        "selectedLabel": "Files to upload",
+        "submit_one": "Upload {{count}} file",
+        "submit_other": "Upload {{count}} files",
+        "clear": "Clear",
+        "remove": "Remove {{name}}",
+        "progressLabel": "Upload progress",
+        "tooMany": "At most {{max}} files per upload — remove {{extra}}.",
+        "readOnly": "Your role ({{role}}) can't add attachments"
+    },
+    "problem": {
+        "type": "Not an allowed file type",
+        "size": "Larger than 10 MB",
+        "content": "Rejected: its content isn't an allowed file type"
+    },
+    "notifications": {
+        "uploaded_one": "Uploaded {{count}} file",
+        "uploaded_other": "Uploaded {{count}} files",
+        "rejected": "Nothing was uploaded — remove the rejected files and try again.",
+        "tooLarge": "File too large (max 10 MB) — nothing was uploaded.",
+        "error": "Couldn't upload the files. Please try again.",
+        "downloadError": "Couldn't download {{name}}. Please try again."
+    }
+}
