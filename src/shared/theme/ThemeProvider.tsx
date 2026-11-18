@@ -1,23 +1,10 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import { ConfigProvider, theme } from 'antd';
 
-import { DARK_SCHEME_QUERY } from './theme.constant';
+import { DEFAULT_THEME_MODE } from './theme.constant';
 import { ThemeContext } from './theme.context';
 import { getStoredThemeMode, storeThemeMode } from './theme.storage';
 import type { ThemeMode } from './theme.type';
-
-// The operating system's setting, kept current while the app is open (synced to the browser's media query).
-function subscribeToSystemScheme(onChange: () => void): () => void {
-    const query = window.matchMedia(DARK_SCHEME_QUERY);
-
-    query.addEventListener('change', onChange);
-
-    return () => query.removeEventListener('change', onChange);
-}
-
-function getSystemMode(): ThemeMode {
-    return window.matchMedia(DARK_SCHEME_QUERY).matches ? 'dark' : 'light';
-}
 
 // Page-level styles outside antd's components (body background, scrollbars, native controls) follow the
 // theme too: its tokens become CSS custom properties on the root, read by the global stylesheets.
@@ -41,18 +28,15 @@ type ThemeProviderProps = {
     children: React.ReactNode;
 };
 
-// Light/dark through antd's theme algorithm (ui-requirements §5.3): the viewer's stored choice, else the
-// operating system's setting.
+// Light/dark through antd's theme algorithm (ui-requirements §5.3): the viewer's stored choice, else light.
 export function ThemeProvider({ children }: ThemeProviderProps) {
-    const [chosenMode, setChosenMode] = useState(getStoredThemeMode);
-    const systemMode = useSyncExternalStore(subscribeToSystemScheme, getSystemMode);
-    const mode = chosenMode ?? systemMode;
+    const [mode, setMode] = useState<ThemeMode>(() => getStoredThemeMode() ?? DEFAULT_THEME_MODE);
 
     const toggleMode = () => {
         const nextMode: ThemeMode = mode === 'dark' ? 'light' : 'dark';
 
         storeThemeMode(nextMode);
-        setChosenMode(nextMode);
+        setMode(nextMode);
     };
 
     const algorithm = mode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;

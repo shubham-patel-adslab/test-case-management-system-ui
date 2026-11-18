@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 import type { ThemeMode } from './theme.type';
 
 export type ThemeContextValue = {
-    // The theme on screen: the viewer's choice, or the operating system's setting until they choose.
+    // The theme on screen: the viewer's choice, or light until they choose.
     mode: ThemeMode;
     toggleMode: () => void;
 };

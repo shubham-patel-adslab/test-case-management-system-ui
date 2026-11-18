@@ -14,7 +14,7 @@ function stubStorage(initial: Record<string, string> = {}) {
     return values;
 }
 
-// Protects: a broken or unavailable store never breaks the app — the theme then follows the OS.
+// Protects: a broken or unavailable store never breaks the app — the theme then starts light.
 describe('theme storage', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
