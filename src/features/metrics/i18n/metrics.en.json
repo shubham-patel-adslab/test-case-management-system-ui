@@ -1,0 +1,45 @@
+{
+    "page": {
+        "title": "Cache metrics",
+        "refresh": "Refresh",
+        "since": "Counted by the API since {{date}} (a restart of the API resets the counters). Times are the server's own time per request, without the sign-in and access checks."
+    },
+    "status": {
+        "caching": "Caching",
+        "on": "On",
+        "off": "Off",
+        "redis": "Redis",
+        "offHint": "Caching is off on the server: every request is read from the database (counted as bypassed).",
+        "redisDownHint": "Redis is {{status}}: requests are read from the database until it's back (counted as bypassed).",
+        "lastError": "Last cache error, {{date}}"
+    },
+    "cache": {
+        "analytics": "Dashboard analytics",
+        "test-suite-list": "Test suite lists",
+        "project": "Project details"
+    },
+    "table": {
+        "cacheColumn": "Cache",
+        "ttlColumn": "Kept for",
+        "requestsGroup": "Requests",
+        "hitsColumn": "Hits",
+        "missesColumn": "Misses",
+        "bypassesColumn": "Bypassed",
+        "errorsColumn": "Errors",
+        "hitRateColumn": "Hit rate",
+        "timeGroup": "Average time",
+        "hitTimeColumn": "Hit",
+        "missTimeColumn": "Miss",
+        "bypassTimeColumn": "Bypassed",
+        "speedUpColumn": "Hit faster by",
+        "empty": "No caches reported",
+        "notAvailable": "—",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes",
+        "hours_one": "{{count}} hour",
+        "hours_other": "{{count}} hours",
+        "milliseconds": "{{value}} ms",
+        "times": "{{value}}×",
+        "hitRateLabel": "Hit rate of {{cache}}"
+    }
+}

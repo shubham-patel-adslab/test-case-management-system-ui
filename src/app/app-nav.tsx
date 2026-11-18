@@ -1,5 +1,6 @@
 import {
     DashboardOutlined,
+    DatabaseOutlined,
     FileTextOutlined,
     FolderOutlined,
     InfoCircleOutlined,
@@ -11,6 +12,7 @@ import {
 import type { AppNavItem } from '../shared/components/layout/AppSidebar';
 import { ANALYTICS_DASHBOARD_PATH } from '../features/analytics/analytics.constant';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../features/auth/auth.constant';
+import { CACHE_METRICS_PATH } from '../features/metrics/metrics.constant';
 import type { PermissionCode, ResourceCode } from '../features/auth/auth.type';
 
 // The app's navigation data; AppShell filters it by permission and hands it to the shared layout.
@@ -40,6 +42,13 @@ export const NAV_ITEMS: GuardedNavItem[] = [
         icon: <TeamOutlined />,
         labelKey: 'nav.users',
         requires: { resource: RESOURCE_CODE.USER, permission: PERMISSION_CODE.READ },
+    },
+    {
+        key: 'cache-metrics',
+        path: CACHE_METRICS_PATH,
+        icon: <DatabaseOutlined />,
+        labelKey: 'nav.cacheMetrics',
+        requires: { resource: RESOURCE_CODE.METRICS, permission: PERMISSION_CODE.READ },
     },
 ];
 

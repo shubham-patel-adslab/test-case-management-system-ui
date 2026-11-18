@@ -4,6 +4,7 @@ import { analyticsMockHandler } from '../../features/analytics/mock/analytics.mo
 import { attachmentMockHandler } from '../../features/attachment/mock/attachment.mock.handler';
 import { authMockHandler } from '../../features/auth/mock/auth.mock.handler';
 import { defectMockHandler } from '../../features/defect/mock/defect.mock.handler';
+import { metricsMockHandler } from '../../features/metrics/mock/metrics.mock.handler';
 import { projectMockHandler } from '../../features/project/mock/project.mock.handler';
 import { suiteRunMockHandler } from '../../features/suite-run/mock/suite-run.mock.handler';
 import { testCaseMockHandler } from '../../features/test-case/mock/test-case.mock.handler';
@@ -23,4 +24,5 @@ export const handlers: AnyHandler[] = [
     ...defectMockHandler,
     ...attachmentMockHandler,
     ...analyticsMockHandler,
+    ...metricsMockHandler,
 ];

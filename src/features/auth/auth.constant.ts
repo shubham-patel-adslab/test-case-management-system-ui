@@ -13,6 +13,8 @@ export const RESOURCE_CODE = {
     DEFECT: 'DEFECT',
     // The dashboard (GET /analytics) — READ for every role.
     ANALYTICS: 'ANALYTICS',
+    // Service metrics (GET /metrics/cache) — READ for ADMIN only.
+    METRICS: 'METRICS',
 } as const;
 
 export const PERMISSION_CODE = {

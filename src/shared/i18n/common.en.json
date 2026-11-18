@@ -10,7 +10,8 @@
         "dashboard": "Dashboard",
         "testCases": "Test cases",
         "testSuites": "Test suites",
-        "executions": "Executions"
+        "executions": "Executions",
+        "cacheMetrics": "Cache metrics"
     },
     "queryState": {
         "loading": "Loading...",

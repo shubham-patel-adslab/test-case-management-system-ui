@@ -31,6 +31,7 @@ describe('sidebar highlight', () => {
         expect(selectedFor('/dashboard')).toBe('dashboard');
         expect(selectedFor('/projects')).toBe('projects');
         expect(selectedFor('/users/abc')).toBe('users');
+        expect(selectedFor('/cache-metrics')).toBe('cache-metrics');
     });
 });
 

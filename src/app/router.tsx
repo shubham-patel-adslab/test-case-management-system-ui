@@ -8,6 +8,7 @@ import { ANALYTICS_DASHBOARD_PATH } from '../features/analytics/analytics.consta
 import { analyticsRoutes } from '../features/analytics/analytics.routes';
 import { authRoutes } from '../features/auth/auth.routes';
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
+import { metricsRoutes } from '../features/metrics/metrics.routes';
 import { projectRoutes, projectWorkspaceRoute } from '../features/project/project.routes';
 import { suiteRunRoutes } from '../features/suite-run/suite-run.routes';
 import { testCaseRoutes } from '../features/test-case/test-case.routes';
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
                                 ...suiteRunRoutes,
                             ]),
                             ...userRoutes,
+                            ...metricsRoutes,
                             // Inside the layout so unknown URLs keep the sidebar/header for navigating back.
                             { path: '*', element: <NotFoundState /> },
                         ],

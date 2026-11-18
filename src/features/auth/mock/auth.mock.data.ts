@@ -12,6 +12,7 @@ export const rolePermissionsMock: Record<string, AuthPermissionsResponseDto> = {
         TEST_ASSIGNMENT: ['CREATE'],
         DEFECT: ['CREATE', 'READ'],
         ANALYTICS: ['READ'],
+        METRICS: ['READ'],
     },
     TEST_LEAD: {
         PROJECT: ['CREATE', 'READ', 'UPDATE'],

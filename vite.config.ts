@@ -6,6 +6,10 @@ import babel from '@rolldown/plugin-babel'
 // development, so the backend needs no CORS setup.
 const TCMS_API_DEV_TARGET = 'http://localhost:3000'
 
+// The backend's invitation emails link to http://localhost:5173/set-password (its UI_BASE_URL), so the dev
+// server must not drift to another port when 5173 is taken — fail instead.
+const TCMS_UI_DEV_PORT = 5173
+
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
@@ -13,6 +17,8 @@ export default defineConfig({
         babel({ presets: [reactCompilerPreset()] })
     ],
     server: {
+        port: TCMS_UI_DEV_PORT,
+        strictPort: true,
         proxy: {
             '/api': TCMS_API_DEV_TARGET,
         },

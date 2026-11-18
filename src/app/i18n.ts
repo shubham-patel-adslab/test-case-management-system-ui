@@ -12,6 +12,7 @@ import suiteRun from '../features/suite-run/i18n/suite-run.en.json';
 import defect from '../features/defect/i18n/defect.en.json';
 import attachment from '../features/attachment/i18n/attachment.en.json';
 import analytics from '../features/analytics/i18n/analytics.en.json';
+import metrics from '../features/metrics/i18n/metrics.en.json';
 
 void i18n
     .use(initReactI18next)
@@ -19,7 +20,7 @@ void i18n
         lng: 'en',
         fallbackLng: 'en',
         resources: {
-            en: { common, project, auth, user, testCase, testSuite, testExecution, suiteRun, defect, attachment, analytics },
+            en: { common, project, auth, user, testCase, testSuite, testExecution, suiteRun, defect, attachment, analytics, metrics },
         },
         interpolation: {
             escapeValue: false,
