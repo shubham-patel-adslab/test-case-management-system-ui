@@ -1,0 +1,14 @@
+// User-entered multi-line text (steps, conditions): keep its line breaks, wrap long words.
+.tb-execution-form__text {
+    margin-block-end: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.tb-execution-form__title {
+    margin-block: 0;
+}
+
+.tb-execution-form__step-field {
+    margin-block: 12px 0;
+}

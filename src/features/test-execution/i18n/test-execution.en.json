@@ -1,0 +1,109 @@
+{
+    "page": {
+        "queueTitle": "Executions",
+        "executeTitle": "Run: {{title}}",
+        "runAgain": "Run again",
+        "openTestCase": "Open test case"
+    },
+    "tab": {
+        "mine": "Assigned to me",
+        "pending": "All pending",
+        "completed": "Completed"
+    },
+    "status": {
+        "PENDING": "Pending"
+    },
+    "progress": {
+        "title": "Progress",
+        "titleMine": "My progress",
+        "executed": "{{executed}} of {{total}} executed",
+        "passRate": "Pass rate {{rate}}%",
+        "none": "No executions yet",
+        "pending": "Pending {{count}}",
+        "passed": "Passed {{count}}",
+        "failed": "Failed {{count}}",
+        "blocked": "Blocked {{count}}",
+        "skipped": "Skipped {{count}}"
+    },
+    "table": {
+        "testCaseColumn": "Test case",
+        "statusColumn": "Status",
+        "assigneeColumn": "Assignee",
+        "executedByColumn": "Executed by",
+        "executedAtColumn": "Executed",
+        "createdAtColumn": "Created",
+        "defectColumn": "Defect",
+        "unassigned": "Unassigned",
+        "emptyMine": "Nothing is assigned to you right now",
+        "emptyPending": "No pending executions",
+        "emptyCompleted": "No completed executions yet",
+        "total_one": "{{count}} execution",
+        "total_other": "{{count}} executions"
+    },
+    "form": {
+        "preConditionsLabel": "Pre-conditions",
+        "postConditionsLabel": "Post-conditions",
+        "stepsTitle": "Steps",
+        "stepLabel": "Step {{number}}",
+        "actionLabel": "Action",
+        "expectedResultLabel": "Expected result",
+        "stepResultLabel": "Result of step {{number}}",
+        "stepResultPlaceholder": "Step result (optional)",
+        "stepCommentLabel": "Comment on step {{number}}",
+        "stepCommentPlaceholder": "Comment (optional)",
+        "markAllPassed": "Mark all steps passed",
+        "resultLabel": "Result",
+        "commentLabel": "Comment",
+        "submit": "Record result",
+        "readOnly": "Your role ({{role}}) can't execute tests"
+    },
+    "validation": {
+        "resultRequired": "Pick the result of this run",
+        "commentMaxLength": "Must be at most 5000 characters",
+        "stepCommentMaxLength": "Must be at most 2000 characters",
+        "passWithFailedStep": "A run with a failed step can't pass"
+    },
+    "view": {
+        "statusLabel": "Status",
+        "testCaseLabel": "Test case",
+        "assigneeLabel": "Assignee",
+        "executedByLabel": "Executed by",
+        "executedAtLabel": "Executed",
+        "createdAtLabel": "Created",
+        "suiteRunLabel": "Suite run",
+        "commentLabel": "Comment",
+        "deletedTestCase": "The test case was deleted — this run keeps its own copy of the title and steps.",
+        "stepsTitle": "Steps",
+        "orderColumn": "#",
+        "actionColumn": "Action",
+        "expectedResultColumn": "Expected result",
+        "resultColumn": "Result",
+        "commentColumn": "Comment",
+        "defectTitle": "Defect",
+        "attachmentsTitle": "Attachments ({{count}})",
+        "auditTitle": "Audit trail",
+        "openSuiteRun": "Open the suite report"
+    },
+    "audit": {
+        "created": "Created",
+        "assigned": "Assigned to {{name}}",
+        "createdBySuiteRun": "Created by suite run #{{id}}",
+        "resultRecorded": "Recorded the result: {{result}}",
+        "attachmentsAdded": "Added attachments: {{files}}",
+        "defectCreated": "Raised defect #{{id}}",
+        "unknownUser": "Unknown user",
+        "someone": "a team member",
+        "empty": "No entries"
+    },
+    "history": {
+        "title": "Execution history",
+        "empty": "This test case hasn't been run yet",
+        "view": "View"
+    },
+    "notifications": {
+        "recordSuccess": "Result recorded: {{result}}",
+        "alreadyRecorded": "Someone else recorded this run first — showing their result.",
+        "recordError": "Couldn't record the result. Please try again.",
+        "testCaseGone": "This test case no longer exists"
+    }
+}
