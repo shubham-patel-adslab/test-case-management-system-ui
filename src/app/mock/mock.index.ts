@@ -1,5 +1,6 @@
 import type { AnyHandler } from 'msw';
 
+import { analyticsMockHandler } from '../../features/analytics/mock/analytics.mock.handler';
 import { attachmentMockHandler } from '../../features/attachment/mock/attachment.mock.handler';
 import { authMockHandler } from '../../features/auth/mock/auth.mock.handler';
 import { defectMockHandler } from '../../features/defect/mock/defect.mock.handler';
@@ -21,4 +22,5 @@ export const handlers: AnyHandler[] = [
     ...suiteRunMockHandler,
     ...defectMockHandler,
     ...attachmentMockHandler,
+    ...analyticsMockHandler,
 ];

@@ -143,6 +143,29 @@ export function ExecutionPage() {
         queryClient.invalidateQueries({ queryKey: testExecutionAuditQueryKey(project.id, execution.id) }),
     ]);
 
+    // Shown on a pending run too, disabled: the API takes attachments only once the result is recorded, and a
+    // missing section would read as a bug. The role's reason first — recording won't change that one.
+    const attachmentsDisabledReason = !canRecord
+        ? tAttachment('upload.readOnly', { role: session?.role.name })
+        : isPending ? t('view.attachmentsPending') : undefined;
+
+    const attachmentsSection = (
+        <section aria-labelledby="execution-attachments-title">
+            <Typography.Title level={4} id="execution-attachments-title">
+                {t('view.attachmentsTitle', { count: execution.attachments.length })}
+            </Typography.Title>
+            <Flex vertical gap="middle">
+                <AttachmentUploader
+                    projectId={project.id}
+                    executionId={execution.id}
+                    disabledReason={attachmentsDisabledReason}
+                    onUploaded={refreshAttachments}
+                />
+                {!isPending && <AttachmentTable attachments={execution.attachments} />}
+            </Flex>
+        </section>
+    );
+
     return (
         <>
             <PageHeader
@@ -196,15 +219,18 @@ export function ExecutionPage() {
                 />
 
                 {isPending ? (
-                    <ExecutionResultForm
-                        steps={execution.steps}
-                        preConditions={testCaseQuery.data?.preConditions}
-                        postConditions={testCaseQuery.data?.postConditions}
-                        readOnlyReason={readOnlyReason}
-                        onSubmit={handleRecord}
-                        onCancel={() => void navigate(queuePath, FORM_EXIT_NAVIGATION)}
-                        isSubmitting={recordMutation.isPending}
-                    />
+                    <>
+                        <ExecutionResultForm
+                            steps={execution.steps}
+                            preConditions={testCaseQuery.data?.preConditions}
+                            postConditions={testCaseQuery.data?.postConditions}
+                            readOnlyReason={readOnlyReason}
+                            onSubmit={handleRecord}
+                            onCancel={() => void navigate(queuePath, FORM_EXIT_NAVIGATION)}
+                            isSubmitting={recordMutation.isPending}
+                        />
+                        {attachmentsSection}
+                    </>
                 ) : (
                     <>
                         <section aria-labelledby="execution-steps-title">
@@ -226,20 +252,7 @@ export function ExecutionPage() {
                             </section>
                         )}
 
-                        <section aria-labelledby="execution-attachments-title">
-                            <Typography.Title level={4} id="execution-attachments-title">
-                                {t('view.attachmentsTitle', { count: execution.attachments.length })}
-                            </Typography.Title>
-                            <Flex vertical gap="middle">
-                                <AttachmentUploader
-                                    projectId={project.id}
-                                    executionId={execution.id}
-                                    readOnlyReason={canRecord ? undefined : tAttachment('upload.readOnly', { role: session?.role.name })}
-                                    onUploaded={refreshAttachments}
-                                />
-                                <AttachmentTable attachments={execution.attachments} />
-                            </Flex>
-                        </section>
+                        {attachmentsSection}
                     </>
                 )}
 

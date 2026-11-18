@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Button, Card, Col, Descriptions, Flex, Row, Table, Typography, type TableColumnsType } from 'antd';
 
-import { SuiteRunStatusPie } from '../components/SuiteRunStatusPie';
 import { getSuiteRun } from '../suite-run.api';
 import { toSuiteRunDetails } from '../suite-run.mapper';
 import { suiteRunDetailsQueryKey } from '../suite-run.query';
 import { useCurrentProject } from '../../project/current-project.context';
 import { DefectReferenceTag } from '../../defect/components/DefectReferenceTag';
 import { ExecutionProgressSummary } from '../../test-execution/components/ExecutionProgressSummary';
+import { ExecutionStatusPie } from '../../test-execution/components/ExecutionStatusPie';
 import { ExecutionStatusTag } from '../../test-execution/components/ExecutionStatusTag';
 import { UserReferenceName } from '../../test-execution/components/UserReferenceName';
 import type { TestExecutionSummaryType } from '../../test-execution/test-execution.type';
@@ -102,7 +102,7 @@ export function SuiteRunReportPage() {
                     </Col>
                     <Col xs={24} lg={12}>
                         <Card size="small" title={t('report.chartTitle')}>
-                            <SuiteRunStatusPie progress={run.progress} />
+                            <ExecutionStatusPie counts={run.progress} summaryLabel={t('report.chartSummary', { count: run.progress.total })} />
                         </Card>
                     </Col>
                 </Row>

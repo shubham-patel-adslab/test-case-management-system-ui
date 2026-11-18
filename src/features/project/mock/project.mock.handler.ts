@@ -40,6 +40,14 @@ function isInScope(project: MockProject, scope: string | null): boolean {
     return scope === null || project.memberIds.includes(scope);
 }
 
+// The projects the signed-in user may read — what analytics covers without a projectId, like the backend's
+// getReadScope.
+export function getMockProjectsInScope(permission: PermissionCode): MockProject[] {
+    const scope = getScope(permission);
+
+    return projectMock.filter((project) => isInScope(project, scope));
+}
+
 // For the mocks of everything inside a project (test cases, suites, executions): the project when the
 // signed-in user reaches it with this permission's scope — READ for reads, UPDATE for changes, like the
 // backend's assertReadable / assertWritable — else undefined (answer 404).

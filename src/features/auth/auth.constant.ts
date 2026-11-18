@@ -11,6 +11,8 @@ export const RESOURCE_CODE = {
     // Assigning test cases (or a suite run) to someone else.
     TEST_ASSIGNMENT: 'TEST_ASSIGNMENT',
     DEFECT: 'DEFECT',
+    // The dashboard (GET /analytics) — READ for every role.
+    ANALYTICS: 'ANALYTICS',
 } as const;
 
 export const PERMISSION_CODE = {

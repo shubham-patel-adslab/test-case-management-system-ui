@@ -1,6 +1,15 @@
-import { FileTextOutlined, FolderOutlined, InfoCircleOutlined, PlayCircleOutlined, ProjectOutlined, TeamOutlined } from '@ant-design/icons';
+import {
+    DashboardOutlined,
+    FileTextOutlined,
+    FolderOutlined,
+    InfoCircleOutlined,
+    PlayCircleOutlined,
+    ProjectOutlined,
+    TeamOutlined,
+} from '@ant-design/icons';
 
 import type { AppNavItem } from '../shared/components/layout/AppSidebar';
+import { ANALYTICS_DASHBOARD_PATH } from '../features/analytics/analytics.constant';
 import { PERMISSION_CODE, RESOURCE_CODE } from '../features/auth/auth.constant';
 import type { PermissionCode, ResourceCode } from '../features/auth/auth.type';
 
@@ -11,6 +20,13 @@ export type GuardedNavItem = AppNavItem & {
 };
 
 export const NAV_ITEMS: GuardedNavItem[] = [
+    {
+        key: 'dashboard',
+        path: ANALYTICS_DASHBOARD_PATH,
+        icon: <DashboardOutlined />,
+        labelKey: 'nav.dashboard',
+        requires: { resource: RESOURCE_CODE.ANALYTICS, permission: PERMISSION_CODE.READ },
+    },
     {
         key: 'projects',
         path: '/projects',

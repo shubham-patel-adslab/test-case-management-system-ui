@@ -81,6 +81,7 @@
         "commentColumn": "Comment",
         "defectTitle": "Defect",
         "attachmentsTitle": "Attachments ({{count}})",
+        "attachmentsPending": "You can add attachments once a result is recorded",
         "auditTitle": "Audit trail",
         "openSuiteRun": "Open the suite report"
     },
@@ -105,5 +106,16 @@
         "alreadyRecorded": "Someone else recorded this run first — showing their result.",
         "recordError": "Couldn't record the result. Please try again.",
         "testCaseGone": "This test case no longer exists"
+    },
+    "count": {
+        "passed": "Passed",
+        "failed": "Failed",
+        "blocked": "Blocked",
+        "skipped": "Skipped",
+        "pending": "Pending"
+    },
+    "statusPie": {
+        "legendLabel": "Show or hide statuses",
+        "empty": "Nothing to show"
     }
 }

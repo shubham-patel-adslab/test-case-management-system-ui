@@ -1,0 +1,40 @@
+{
+    "severity": {
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High",
+        "CRITICAL": "Critical"
+    },
+    "action": {
+        "create": "Create defect",
+        "readOnly": "Your role ({{role}}) can't create defects"
+    },
+    "form": {
+        "dialogTitle": "Create a defect from this failed run",
+        "titleLabel": "Title",
+        "descriptionLabel": "Description",
+        "severityLabel": "Severity",
+        "submit": "Create defect",
+        "prefillTitle": "Failed: {{title}}",
+        "prefillSteps": "Steps to reproduce:",
+        "prefillFailed": "← failed",
+        "prefillExpected": "Expected: {{expected}}",
+        "prefillComment": "Comment: {{comment}}",
+        "prefillResult": "Result: {{comment}}"
+    },
+    "validation": {
+        "titleRequired": "Title is required",
+        "titleMaxLength": "Title must be at most 255 characters",
+        "descriptionMaxLength": "Description must be at most 5000 characters",
+        "severityRequired": "Severity is required"
+    },
+    "card": {
+        "title": "Defect",
+        "createdBy": "Raised by {{name}} · {{date}}"
+    },
+    "notifications": {
+        "created": "Defect created",
+        "conflict": "This run can't get a defect (it didn't fail, or it already has one) — the run has been reloaded.",
+        "error": "Couldn't create the defect. Please try again."
+    }
+}

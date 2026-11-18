@@ -28,6 +28,7 @@ describe('sidebar highlight', () => {
     });
 
     it('keeps the main items for pages outside a project', () => {
+        expect(selectedFor('/dashboard')).toBe('dashboard');
         expect(selectedFor('/projects')).toBe('projects');
         expect(selectedFor('/users/abc')).toBe('users');
     });

@@ -7,6 +7,10 @@ import type { ListSort } from '../../shared/type/sort.type';
 export const EXECUTION_PENDING = 'PENDING';
 export const EXECUTION_STATUSES = [EXECUTION_PENDING, ...EXECUTION_RESULTS] as const;
 
+// The counts of a progress / analytics breakdown, in chart order: the results, then the pending backlog.
+export const EXECUTION_COUNT_KEYS = ['passed', 'failed', 'blocked', 'skipped', 'pending'] as const;
+export const EXECUTION_RESULT_COUNT_KEYS = ['passed', 'failed', 'blocked', 'skipped'] as const;
+
 export const EXECUTION_AUDIT_ACTIONS = ['CREATED', 'RESULT_RECORDED', 'ATTACHMENT_ADDED', 'DEFECT_CREATED'] as const;
 
 // Same limits as the backend's result schema.

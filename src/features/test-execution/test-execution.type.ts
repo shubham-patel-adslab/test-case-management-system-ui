@@ -1,7 +1,14 @@
 import { z } from 'zod';
 
 import type { executionResultFormSchema } from './test-execution.schema';
-import type { EXECUTION_AUDIT_ACTIONS, EXECUTION_QUEUE_TAB, EXECUTION_STATUSES, TEST_EXECUTION_SORT_FIELDS } from './test-execution.constant';
+import type {
+    EXECUTION_AUDIT_ACTIONS,
+    EXECUTION_COUNT_KEYS,
+    EXECUTION_QUEUE_TAB,
+    EXECUTION_RESULT_COUNT_KEYS,
+    EXECUTION_STATUSES,
+    TEST_EXECUTION_SORT_FIELDS,
+} from './test-execution.constant';
 import type { AttachmentType } from '../attachment/attachment.type';
 import type { DefectDetailsType, DefectReferenceType } from '../defect/defect.type';
 import type { ExecutionResult } from '../test-case/test-case.type';
@@ -12,6 +19,8 @@ export type ExecutionStatus = (typeof EXECUTION_STATUSES)[number];
 export type ExecutionAuditAction = (typeof EXECUTION_AUDIT_ACTIONS)[number];
 export type ExecutionQueueTab = (typeof EXECUTION_QUEUE_TAB)[keyof typeof EXECUTION_QUEUE_TAB];
 export type TestExecutionSortField = (typeof TEST_EXECUTION_SORT_FIELDS)[number];
+export type ExecutionCountKey = (typeof EXECUTION_COUNT_KEYS)[number];
+export type ExecutionResultCountKey = (typeof EXECUTION_RESULT_COUNT_KEYS)[number];
 
 // The form edits `status: null` until a result is picked; the schema turns it into a result on submit.
 export type ExecutionResultFormInputType = z.input<typeof executionResultFormSchema>;

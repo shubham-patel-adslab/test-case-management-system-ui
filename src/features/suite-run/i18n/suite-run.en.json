@@ -42,8 +42,8 @@
         "assigneeColumn": "Assignee",
         "executedByColumn": "Executed by",
         "executedAtColumn": "Executed",
-        "chartSummary_one": "Status of the run's {{count}} execution: {{parts}}",
-        "chartSummary_other": "Status of the run's {{count}} executions: {{parts}}",
+        "chartSummary_one": "Status of the run's {{count}} execution",
+        "chartSummary_other": "Status of the run's {{count}} executions",
         "defectColumn": "Defect"
     },
     "status": {

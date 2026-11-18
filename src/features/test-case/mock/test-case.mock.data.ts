@@ -19,10 +19,19 @@ const SCENARIOS = [
 ];
 const TAG_POOL = ['smoke', 'regression', 'auth', 'payments', 'ui', 'api', 'mobile', 'critical-path', 'edge-case', 'performance'];
 
-// Early enough that every seeded date (created + up to 60 days to the last run) lies in the past.
-const BASE_DATE = Date.UTC(2026, 4, 1);
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
+// Anchored to today, so the mock history always ends now (the dashboard's ranges end today) and never lies in
+// the future: test cases are created in the months before the last 90 days, and their last results are
+// recorded over the last 90 days. The same data on every reload of a day.
+const RESULT_DAYS = 90;
+const TODAY = Math.floor(Date.now() / DAY_MS) * DAY_MS;
+const BASE_DATE = TODAY - 220 * DAY_MS;
+
+// A recorded run's time: some day of the last 90, a few hours into it — never later than now.
+function toLastExecutedAt(daysAgo: number, index: number): string {
+    return new Date(Math.min(TODAY - daysAgo * DAY_MS + (index % 10) * HOUR_MS, Date.now() - HOUR_MS)).toISOString();
+}
 
 // Deterministic pseudo-random numbers (Park–Miller), so every reload shows the same data. Its products stay
 // below 2^53, so JavaScript numbers keep them exact.
@@ -63,7 +72,7 @@ function createTestCase(id: number, projectId: number, index: number, random: (m
             expectedResult: `The ${feature.toLowerCase()} result is shown without errors.`,
         })),
         lastResult: isExecuted ? EXECUTION_RESULTS[random(EXECUTION_RESULTS.length)] : null,
-        lastExecutedAt: isExecuted ? new Date(Date.parse(createdAt) + (1 + random(60)) * DAY_MS).toISOString() : null,
+        lastExecutedAt: isExecuted ? toLastExecutedAt(random(RESULT_DAYS), index) : null,
         createdBy: (random(3) ? testLead : admin).id,
         createdAt,
         updatedAt: createdAt,

@@ -1,0 +1,5 @@
+// User-entered multi-line text: keep its line breaks, wrap long words.
+.tb-defect-card__text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}

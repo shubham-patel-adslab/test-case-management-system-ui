@@ -1,0 +1,37 @@
+.tb-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 16px;
+}
+
+.tb-chart-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 4px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+
+    // A switched-off series: struck through and faded, so its state isn't shown by color alone.
+    &[aria-pressed='false'] {
+        opacity: 0.45;
+        text-decoration: line-through;
+    }
+
+    &:focus-visible {
+        outline: 2px solid currentcolor;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+}
+
+.tb-chart-legend__swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--tb-chart-legend-swatch-color);
+}

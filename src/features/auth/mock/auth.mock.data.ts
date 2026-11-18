@@ -11,6 +11,7 @@ export const rolePermissionsMock: Record<string, AuthPermissionsResponseDto> = {
         TEST_EXECUTION: ['CREATE', 'READ', 'UPDATE'],
         TEST_ASSIGNMENT: ['CREATE'],
         DEFECT: ['CREATE', 'READ'],
+        ANALYTICS: ['READ'],
     },
     TEST_LEAD: {
         PROJECT: ['CREATE', 'READ', 'UPDATE'],
@@ -19,6 +20,7 @@ export const rolePermissionsMock: Record<string, AuthPermissionsResponseDto> = {
         TEST_EXECUTION: ['CREATE', 'READ', 'UPDATE'],
         TEST_ASSIGNMENT: ['CREATE'],
         DEFECT: ['CREATE', 'READ'],
+        ANALYTICS: ['READ'],
     },
     TESTER: {
         PROJECT: ['READ'],
@@ -26,6 +28,7 @@ export const rolePermissionsMock: Record<string, AuthPermissionsResponseDto> = {
         TEST_SUITE: ['READ'],
         TEST_EXECUTION: ['CREATE', 'READ', 'UPDATE'],
         DEFECT: ['CREATE', 'READ'],
+        ANALYTICS: ['READ'],
     },
     READ_ONLY: {
         PROJECT: ['READ'],
@@ -33,5 +36,6 @@ export const rolePermissionsMock: Record<string, AuthPermissionsResponseDto> = {
         TEST_SUITE: ['READ'],
         TEST_EXECUTION: ['READ'],
         DEFECT: ['READ'],
+        ANALYTICS: ['READ'],
     },
 };
