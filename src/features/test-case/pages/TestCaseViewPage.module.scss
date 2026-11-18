@@ -1,0 +1,6 @@
+// User-entered multi-line text: keep its line breaks, wrap long words.
+.tb-test-case-view__text {
+    margin-block-end: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
